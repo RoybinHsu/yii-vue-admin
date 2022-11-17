@@ -20,6 +20,23 @@ class Response extends BaseObject
      */
     const ERR_CODE = 0;
 
+    const IGNORE_ERR = [
+        'function',
+        'class',
+        'app',
+        'db',
+        'redis',
+        'controllers',
+        'jobs',
+        'models',
+        'requests',
+        'services',
+        'mysql',
+        'connection',
+        'public',
+        'index',
+    ];
+
     /**
      * 响应数据之前
      *
@@ -33,11 +50,22 @@ class Response extends BaseObject
         $response->headers->set('Trace-Id', TRACE_ID);
         if (is_array($response->data)) {
             if (!$response->isSuccessful) {
-                $response->data = [
-                    'code' => $response->data['code'] ?? self::ERR_CODE,
-                    'msg'  => $response->data['message'] ?? '请求失败',
-                    'data' => [],
-                ];
+                $trace = implode("\n", ($response->data['stack-trace'] ?? []));
+                $msg   = 'name:' . ($response->data['name'] ?? '') . ' message:' . ($response->data['message'] ?? '') . ' file:' . ($response->data['file'] ?? '') . ' line:' . ($response->data['line'] ?? '') . ' trace:' . $trace;
+                Yii::error($msg);
+                $msg        = strtolower($msg);
+                $return_msg = $response->data['message'] ?? '请求失败';
+                foreach (self::IGNORE_ERR as $s) {
+                    if (strpos($msg, $s) !== false) {
+                        $return_msg = '系统错误';
+                        break;
+                    }
+                }
+                $response->data = Yii::$app->helper->responseArray(
+                    $response->data['code'] ?? self::ERR_CODE,
+                    $return_msg,
+                    []
+                );
             }
             $response->statusCode = 200;
         }

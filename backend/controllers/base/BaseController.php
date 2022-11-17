@@ -3,6 +3,7 @@
 namespace app\controllers\base;
 
 
+use app\utils\helper\Helper;
 use Yii;
 use yii\rest\Controller;
 use yii\web\Response;
@@ -30,11 +31,7 @@ class BaseController extends Controller
         string $msg = '请求成功',
         int $code = JR::SUC_CODE
     ): Response {
-        return $this->asJson([
-            'code' => $code,
-            'msg'  => $msg,
-            'data' => $data,
-        ]);
+        return $this->asJson(Yii::$app->helper->responseArray($code, $msg, $data));
     }
 
     /**
@@ -49,11 +46,7 @@ class BaseController extends Controller
         array $data = [],
         int $code = JR::ERR_CODE
     ): Response {
-        return $this->asJson([
-            'code' => $code,
-            'msg'  => $msg,
-            'data' => $data,
-        ]);
+        return $this->asJson(Yii::$app->helper->responseArray($code, $msg, $data));
     }
 
     /**

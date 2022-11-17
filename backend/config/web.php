@@ -1,7 +1,9 @@
 <?php
 
+use app\utils\helper\Helper;
 use app\utils\log\AppLogTarget;
 use sizeg\jwt\Jwt;
+use sizeg\jwt\JwtValidationData;
 use yii\symfonymailer\Mailer;
 use yii\web\JsonParser;
 use yii\web\Request;
@@ -36,11 +38,19 @@ $config = [
                 'on beforeSend' => '\app\utils\jwt\Response::beforeSend',
                 'charset'       => 'UTF-8',
             ],
+            'jwt'          => [
+                'class'             => Jwt::class,
+                'key'               => '6Yhf4ZwqQUWyROLT',
+                'jwtValidationData' => JwtValidationData::class,
+            ],
+            'helper'       => [
+                'class' => Helper::class,
+            ],
             'cache'        => [
                 'class' => 'yii\caching\FileCache',
             ],
             'user'         => [
-                'identityClass'   => 'app\models\User',
+                'identityClass'   => app\models\User::class,
                 'enableAutoLogin' => true,
             ],
             'errorHandler' => [
@@ -75,7 +85,6 @@ $config = [
                     ],
                 ],
             ],
-            'db'           => $db,
             'urlManager'   => [
                 'enablePrettyUrl' => true,
                 'showScriptName'  => false,
@@ -88,7 +97,7 @@ $config = [
                 'jwtValidationData' => JwtValidationData::class,
             ],
 
-        ] + $redis + $queue,
+        ] + $redis + $queue + $db,
     'params'       => $params,
 ];
 

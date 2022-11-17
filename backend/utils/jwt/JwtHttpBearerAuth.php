@@ -4,8 +4,15 @@
 namespace app\utils\jwt;
 
 
+use app\common\exception\ParamErrorException;
+use app\services\company\CompanyService;
+use Lcobucci\JWT\Token;
 use yii\base\Action;
 use yii\helpers\StringHelper;
+use yii\web\IdentityInterface;
+use yii\web\Request;
+use yii\web\User;
+use Yii;
 
 class JwtHttpBearerAuth extends \sizeg\jwt\JwtHttpBearerAuth
 {
@@ -24,6 +31,32 @@ class JwtHttpBearerAuth extends \sizeg\jwt\JwtHttpBearerAuth
             }
         }
         return false;
+    }
+
+    /**
+     * @param User $user
+     * @param Request $request
+     * @param \yii\web\Response $response
+     *
+     * @return IdentityInterface|null
+     */
+    public function authenticate($user, $request, $response): ?IdentityInterface
+    {
+        $authHeader = $request->getHeaders()->get('Authorization');
+        if (!$this->isOptional(Yii::$app->requestedAction) && empty($authHeader)) {
+            throw new ParamErrorException('缺少权限参数[Authorization]');
+        }
+        if (preg_match('/^' . $this->schema . '\s+(.*?)$/', $authHeader, $matches)) {
+            /**
+             * @var Token
+             */
+            $token = $this->loadToken($matches[1]);
+            if ($token === null) {
+                return null;
+            }
+            return Yii::$app->user->loginByAccessToken($token, get_class($this));
+        }
+        return null;
     }
 
 }

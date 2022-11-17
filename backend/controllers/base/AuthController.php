@@ -2,6 +2,7 @@
 
 namespace app\controllers\base;
 
+use app\models\User;
 use app\utils\jwt\JwtHttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
@@ -26,10 +27,8 @@ class AuthController extends BaseController
         $behaviors['authenticator']     = [
             'class'    => JwtHttpBearerAuth::class,
             'optional' => [
-                '/site/index',
                 '/user/login',
                 '/user/get-token',
-                //'/test/index',
             ],
         ];
         return $behaviors;

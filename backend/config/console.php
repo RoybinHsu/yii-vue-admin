@@ -17,10 +17,13 @@ $config = [
         '@tests' => '@app/tests',
     ],
     'components'          => [
-            'cache' => [
+            'cache'  => [
                 'class' => 'yii\caching\FileCache',
             ],
-            'log'   => [
+            'helper' => [
+                'class' => Helper::class,
+            ],
+            'log'    => [
                 'traceLevel' => 3,
                 'targets'    => [
                     [
@@ -43,8 +46,7 @@ $config = [
                     ],
                 ],
             ],
-            'db'    => $db,
-        ] + $redis + $queue,
+        ] + $redis + $queue + $db,
     'params'              => $params,
     /*
     'controllerMap' => [

@@ -3,12 +3,14 @@
 use yii\db\ActiveQuery;
 use yii\helpers\VarDumper;
 use Yii;
+use yii\web\Response;
 
 if (!function_exists('dd')) {
     function dd(...$args)
     {
         if (php_sapi_name() != 'cli') {
             http_response_code(500);
+            Yii::$app->response->format = Response::FORMAT_HTML;
         }
         foreach ($args as $x) {
             if (php_sapi_name() == 'cli') {

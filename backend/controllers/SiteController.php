@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\controllers\base\AuthController;
 use Yii;
 use yii\web\NotFoundHttpException;
+use yii\web\Request;
 use yii\web\Response;
 use app\models\LoginForm;
 use app\models\ContactForm;
@@ -26,10 +27,11 @@ class SiteController extends AuthController
     /**
      * Login action.
      *
-     * @return Response|string
+     * @return Response
      */
-    public function actionLogin()
+    public function actionLogin(Request $request)
     {
+        return $this->returnOk();
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
