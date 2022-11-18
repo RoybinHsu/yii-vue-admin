@@ -4,9 +4,12 @@ namespace app\controllers;
 
 use app\controllers\base\AuthController;
 use app\models\User;
+use app\service\user\UserServices;
 use app\utils\jwt\Jwt;
+use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use yii\data\DataProviderInterface;
 use yii\helpers\StringHelper;
 use yii\validators\Validator;
 use yii\web\Request;
@@ -32,7 +35,7 @@ class UserController extends AuthController
         $user = User::findUser($data['username'], $data['username'], $data['username']);
         if ($user) {
             if ($user->validatePassword($data['password'])) {
-                $jwt   = new Jwt([
+                $jwt   = Jwt::getInstance([
                     'claims' => ['id' => $user->id]
                 ]);
                 $token = $jwt->generateToken();
@@ -48,14 +51,17 @@ class UserController extends AuthController
     }
 
     /**
+     * 获取登录用户信息
+     *
      * @param Request $request
      *
      * @return Response
+     * @throws Exception
      */
-    public function actionInfo(Request $request)
+    public function actionInfo(Request $request): Response
     {
-        return $this->returnOk(['username' => '123123123', 'password' => '123456']);
-
+        $data = UserServices::getInstance() ->getLoginUserInfo(Yii::$app->user->getId());
+        return $this->returnOk($data);
     }
 
 

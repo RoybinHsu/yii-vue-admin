@@ -20,7 +20,7 @@ class BaseController extends Controller
 {
 
     /**
-     * @param array $data
+     * @param mixed|null $data
      * @param string $msg
      * @param int $code
      *

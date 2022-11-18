@@ -176,7 +176,7 @@ class User extends Base implements IdentityInterface
      * @param $phone
      * @param $email
      *
-     * @return ActiveRecord
+     * @return ActiveRecord|self|$this
      */
     public static function findUser($username, $phone, $email): ?ActiveRecord
     {

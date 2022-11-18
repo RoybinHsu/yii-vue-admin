@@ -2,11 +2,12 @@
 
 namespace app\utils\jwt;
 
+use app\utils\base\Base;
 use Lcobucci\JWT\Token;
 use yii\base\BaseObject;
 use Yii;
 
-class Jwt extends BaseObject
+class Jwt extends Base
 {
     /**
      * 加密算法

@@ -7,8 +7,10 @@
 
 namespace app\commands;
 
+use app\utils\base\Base;
 use yii\console\Controller;
 use yii\console\ExitCode;
+use yii\helpers\Json;
 
 /**
  * This command echoes the first argument that you have entered.
@@ -29,6 +31,8 @@ class HelloController extends Controller
      */
     public function actionIndex($message = 'hello world')
     {
-        \Yii::info('Test Test');
+
+
     }
+
 }
