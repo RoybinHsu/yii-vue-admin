@@ -36,7 +36,7 @@ class UserController extends AuthController
         if ($user) {
             if ($user->validatePassword($data['password'])) {
                 $jwt   = Jwt::getInstance([
-                    'claims' => ['id' => $user->id]
+                    'claims' => ['id' => $user->id],
                 ]);
                 $token = $jwt->generateToken();
                 if ($token) {
@@ -60,8 +60,22 @@ class UserController extends AuthController
      */
     public function actionInfo(Request $request): Response
     {
-        $data = UserServices::getInstance() ->getLoginUserInfo(Yii::$app->user->getId());
+        $data = UserServices::getInstance()->getLoginUserInfo(Yii::$app->user->getId());
         return $this->returnOk($data);
+    }
+
+    /**
+     * 退出登录
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function actionLogout(Request $request): Response
+    {
+        Yii::$app->user->logout();
+        return $this->returnOk();
+
     }
 
 

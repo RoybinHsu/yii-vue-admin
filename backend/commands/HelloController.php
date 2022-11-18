@@ -31,7 +31,10 @@ class HelloController extends Controller
      */
     public function actionIndex($message = 'hello world')
     {
-
+        for ($i =1; $i<=8; $i++) {
+            echo $i % 7;
+            echo "\n";
+        }
 
     }
 
