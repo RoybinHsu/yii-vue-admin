@@ -1,7 +1,7 @@
 import axios from 'axios'
-import {MessageBox, Message} from 'element-ui'
+import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import {getToken} from '@/utils/auth'
+import { getToken } from '@/utils/auth'
 import qs from 'qs'
 
 // create an axios instance
@@ -9,8 +9,8 @@ const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000, // request timeout
-  transformRequest: [function (data, headers) {
-    if (headers['Content-Type'] && headers['Content-Type'] == 'multipart/form-data') {
+  transformRequest: [function(data, headers) {
+    if (headers['Content-Type'] && headers['Content-Type'] === 'multipart/form-data') {
       return data
     }
     data = qs.stringify(data)

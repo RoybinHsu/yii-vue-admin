@@ -32,8 +32,8 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           await store.dispatch('user/getInfo')
-
-          next()
+          // router.addRoutes(store.getters.menus)
+          next({ ...to, replace: true })
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
@@ -61,3 +61,4 @@ router.afterEach(() => {
   // finish progress bar
   NProgress.done()
 })
+
