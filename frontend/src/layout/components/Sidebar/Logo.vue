@@ -14,6 +14,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'SidebarLogo',
   props: {
@@ -24,7 +25,7 @@ export default {
   },
   data() {
     return {
-      title: 'Vue Admin Template',
+      title: this.$store.state.settings.title,
       logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
     }
   }
@@ -55,10 +56,10 @@ export default {
     width: 100%;
 
     & .sidebar-logo {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       vertical-align: middle;
-      margin-right: 12px;
+      margin-right: 20px;
     }
 
     & .sidebar-title {

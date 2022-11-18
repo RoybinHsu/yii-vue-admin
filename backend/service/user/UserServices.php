@@ -32,7 +32,7 @@ class UserServices extends Base
             'email'    => $model->email,
             'status'   => $model->status,
             'avatar'   => 'a' . (($model->id % 8) + 1) . '.jpg',
-            'menu'     => $this->getUserMenu($id),
+            'menus'    => $this->getUserMenu($id),
         ];
 
     }
@@ -44,52 +44,39 @@ class UserServices extends Base
      *
      * @return array
      */
-    public function getUserMenu($id): array
+    public function getUserMenu($id = null): array
     {
-        $menus[] = new Menu([
-            'path'      => '/login',
-            'name'      => 'Login',
-            'redirect'  => '',
-            'component' => '@/views/login/index',
-            'hidden'    => true,
-            'meta'      => new Meta(['title' => '登录']),
-            'children'  => [],
-        ]);
-        $menus[] = new Menu([
-            'path'      => '/404',
-            'name'      => '404',
-            'redirect'  => '',
-            'component' => '@/views/404',
-            'hidden'    => true,
-            'meta'      => new Meta(['title' => '页面为找']),
-            'children'  => [],
-        ]);
-        $menus[]   = new Menu([
-            'path'      => '/',
-            'redirect'  => '/dashboard',
-            'component' => '@/layout',
-            'hidden'    => false,
-            'meta'      => new Meta(['title' => '']),
-            'children'  => [
-                new Menu([
-                    'path'      => 'dashboard',
-                    'name'      => 'Dashboard',
-                    'component' => '@/views/dashboard/index',
-                    'hidden'    => false,
-                    'meta'      => new Meta(['title' => '首页']),
-                ])
+        return [
+            [
+                'path'     => '/',
+                'redirect' => '/dashboard',
+                'meta'     => ['title' => 'Dashboard', 'icon' => 'el-icon-s-home'],
+                'children' => [
+                    [
+                        'path' => 'dashboard',
+                        'name' => 'Home',
+                        'meta' => ['title' => '首页'],
+                    ],
+                ],
             ],
-        ]);
-        $menus[] = new Menu([
-            'path'      => '/example',
-            'name'      => 'Example',
-            'redirect'  => '/example/table',
-            'component' => '@/layout',
-            'hidden'    => false,
-            'meta'      => new Meta(['title' => 'Example', 'icon' => 'el-icon-s-help']),
-            'children'  => [],
-        ]);
-        return $menus;
+            [
+                'path'     => '/example',
+                'name'     => 'Example',
+                'meta'     => ['title' => 'Example', 'icon' => 'el-icon-s-help'],
+                'children' => [
+                    [
+                        'path' => 'table',
+                        'name' => 'Table',
+                        'meta' => ['title' => '表格样例', 'icon' => 'el-icon-s-grid'],
+                    ],
+                    [
+                        'path' => 'tree',
+                        'name' => 'Tree',
+                        'meta' => ['title' => '树形样例', 'icon' => 'el-icon-s-grid'],
+                    ],
+                ],
+            ],
+        ];
     }
 
 }

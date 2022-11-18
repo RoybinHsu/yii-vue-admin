@@ -9,6 +9,7 @@ export function login(data) {
 }
 
 export function getInfo() {
+  console.log('getInfo')
   return request({
     url: '/user/info',
     method: 'get',
