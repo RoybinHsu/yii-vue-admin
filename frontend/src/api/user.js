@@ -9,7 +9,6 @@ export function login(data) {
 }
 
 export function getInfo() {
-  console.log('getInfo')
   return request({
     url: '/user/info',
     method: 'get',
@@ -39,7 +38,32 @@ export function logout() {
 
 export function getWechatLoginInfo() {
   return request({
-    url: '/api/user/logout',
+    url: '/user/logout',
     method: 'post'
+  })
+}
+
+/**
+ * 获取用户的菜单信息
+ * @returns {AxiosPromise}
+ */
+export function getUserMenus(data) {
+  return request({
+    url: '/user/menus',
+    method: 'get',
+    data: data
+  })
+}
+
+/**
+ * 上传菜单信息
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export function uploadMenus(data) {
+  return request({
+    url: '/user/menus',
+    method: 'post',
+    data: data
   })
 }

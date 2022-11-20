@@ -9,7 +9,7 @@
 
       <el-form-item prop="username">
         <span class="svg-container">
-          <svg-icon icon-class="user"/>
+          <svg-icon icon-class="user" />
         </span>
         <el-input
           ref="username"
@@ -24,7 +24,7 @@
 
       <el-form-item prop="password">
         <span class="svg-container">
-          <svg-icon icon-class="password"/>
+          <svg-icon icon-class="password" />
         </span>
         <el-input
           :key="passwordType"
@@ -38,7 +38,7 @@
           @keyup.enter.native="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
+          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
 
@@ -48,7 +48,7 @@
 
       <div class="tips">
         <span style="margin-right:20px;">没有账号? <el-button type="text" @click="register"> 注册 </el-button> </span>
-<!--        <span> password: any</span>-->
+        <!--        <span> password: any</span>-->
       </div>
 
     </el-form>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import {validUsername} from '@/utils/validate'
+import { validUsername } from '@/utils/validate'
 
 export default {
   name: 'Login',
@@ -81,8 +81,8 @@ export default {
         password: '2022*#8910Xsb'
       },
       loginRules: {
-        username: [{required: true, trigger: 'blur', validator: validateUsername}],
-        password: [{required: true, trigger: 'blur', validator: validatePassword}]
+        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
       passwordType: 'password',
@@ -113,7 +113,7 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({path: this.redirect || '/'})
+            this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           }).catch(() => {
             this.loading = false
@@ -124,7 +124,7 @@ export default {
       })
     },
     register() {
-      this.$router.replace({path: 'register'})
+      this.$router.replace({ path: 'register' })
     }
   }
 }

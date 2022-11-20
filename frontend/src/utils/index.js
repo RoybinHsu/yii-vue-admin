@@ -2,6 +2,8 @@
  * Created by PanJiaChen on 16/11/18.
  */
 
+import { bool } from 'mockjs/src/mock/random/basic';
+
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
@@ -45,7 +47,9 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') {
+      return ['日', '一', '二', '三', '四', '五', '六'][value]
+    }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -114,4 +118,27 @@ export function param2Obj(url) {
     }
   })
   return obj
+}
+
+/**
+ * 格式化后台入菜单配置
+ * @param routers
+ */
+export function formatBackendMenuList(routers) {
+  const menus = []
+  routers.forEach(v => {
+    const menu = {
+      path: v['path'] || '',
+      api: v['api'] || '',
+      redirect: v['redirect'] || '',
+      hidden: v['hidden'],
+      name: v['name'] || '',
+      meta: v['meta'] || ''
+    }
+    if (v['children'] !== 0[0] && v['children'].length > 0) {
+      menu.children = formatBackendMenuList(v['children'])
+    }
+    menus.push(menu)
+  })
+  return menus
 }

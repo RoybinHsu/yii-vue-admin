@@ -106,7 +106,6 @@ export default {
     addTags() {
       const { name, meta } = this.$route
       let tagName = meta.title || name
-      console.log(meta.title, tagName, name, '++++')
       if (tagName) {
         this.$store.dispatch('tagsView/addView', this.$route)
       }

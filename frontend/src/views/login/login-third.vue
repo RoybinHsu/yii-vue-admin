@@ -3,6 +3,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 export default {
   name: 'Login',
   data() {
@@ -12,14 +13,14 @@ export default {
     const _this = this
     // _this.loadDingTalkLoginJs('https://g.alicdn.com/dingding/h5-dingtalk-login/0.21.0/ddlogin.js')
     _this.loadDingTalkLoginJs('http://wwcdn.weixin.qq.com/node/wework/wwopen/js/wwLogin-1.2.4.js')
-    _this.$nextTick(function () {
+    _this.$nextTick(function() {
       // let timer = setInterval(function () {
       //   if (window.DTFrameLogin) {
       //     clearInterval(timer)
       //     _this.showDingTalkLoginQrcode()
       //   }
       // }, 20)
-      let wwTimer = setInterval(function() {
+      const wwTimer = setInterval(function () {
         if (window.WwLogin) {
           clearInterval(wwTimer)
           _this.showWechatLoginQrcode()
@@ -38,12 +39,12 @@ export default {
     showWechatLoginQrcode() {
       const wwLogin = new WwLogin({
         "id": "login-qrcode-container",
-        "appid": "ww0c6f6831b3d47deb",
+        "appid": 'ww0c6f6831b3d47deb',
         "agentid": "1000004",
-        "redirect_uri": "http://admin.jzcassociates.com/site/callback",
+        "redirect_uri": 'http://admin.jzcassociates.com/site/callback',
         "state": "Test",
         "href": "",
-        "lang": "zh",
+        "lang": "zh"
       })
     },
     showDingTalkLoginQrcode() {
@@ -51,7 +52,7 @@ export default {
         {
           id: 'login-qrcode-container',
           width: 400,
-          height: 800,
+          height: 800
         },
         {
           redirect_uri: encodeURIComponent('http://admin.jzcassociates.com/site/callback'),
@@ -59,19 +60,18 @@ export default {
           corpId: '2054465978',
           scope: 'openid',
           response_type: 'code',
-          state: 'test',
+          state: 'test'
         },
         (loginResult) => {
-          const {redirectUrl, authCode, state} = loginResult
+          // const {redirectUrl, authCode, state} = loginResult
           // 这里可以直接进行重定向
-          window.location.href = redirectUrl
+          // window.location.href = redirectUrl
           // 也可以在不跳转页面的情况下，使用code进行授权
-          console.log(authCode)
         },
         (errorMsg) => {
           // 这里一般需要展示登录失败的具体原因
           alert(`Login Error: ${errorMsg}`)
-        },
+        }
       )
     }
   }

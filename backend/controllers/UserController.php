@@ -3,13 +3,16 @@
 namespace app\controllers;
 
 use app\controllers\base\AuthController;
+use app\models\base\Menu;
 use app\models\User;
 use app\service\user\UserServices;
+use app\utils\exception\DataRepeatException;
 use app\utils\jwt\Jwt;
 use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\data\DataProviderInterface;
+use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 use yii\validators\Validator;
 use yii\web\Request;
@@ -76,6 +79,62 @@ class UserController extends AuthController
         Yii::$app->user->logout();
         return $this->returnOk();
 
+    }
+
+    /**
+     * 菜单获取和上传
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function actionMenus(Request $request): Response
+    {
+        if ($request->isPost) {
+            // 上传菜单数据
+            $trans = Yii::$app->db->beginTransaction();
+            try {
+                $data = $request->getBodyParams();
+                UserServices::getInstance()->checkRepeat($request->getRawBody());
+                UserServices::getInstance()->delMenus();
+                UserServices::getInstance()->saveMenus($data);
+                $trans->commit();
+                return $this->returnOk();
+            } catch (InvalidConfigException | Exception $e) {
+                Yii::error('upload menus错误: ' . $e->getMessage() . ' file:' . $e->getFile() . ' line:' . $e->getLine());
+                $trans->rollBack();
+                return $this->returnErr($e->getMessage());
+            }
+            return $this->returnErr();
+        }
+        $page      = $request->get('page', 1);
+        $limit     = $request->get('limit', 20);
+        $path      = trim($request->get('path', ''));
+        $title     = trim($request->get('title', ''));
+        $pid_title = trim($request->get('pid_title', ''));
+        $api       = trim($request->get('api', ''));
+        $offset = ($page - 1) * $limit;
+        $filter = [];
+        if ($path) {
+            $filter['path'] = $path;
+        }
+        if ($title) {
+            $filter['title'] = $title;
+        }
+        if ($pid_title) {
+            $parent = Menu::find()->select('id')->where(['title' => $pid_title])->asArray()->all();
+            $pidS = ArrayHelper::getColumn($parent, 'id');
+            if (!$pidS) {
+                $pidS = [-1];
+            }
+            $filter['pid'] = $pidS;
+        }
+        if ($api) {
+            $filter['api'] = $api;
+        }
+        [$menus, $count] = UserServices::getInstance()->getUserMenu(Yii::$app->user->getId(), false, $filter, $offset,
+            $limit);
+        return $this->returnOk(['menus' => $menus, 'total' => $count]);
     }
 
 

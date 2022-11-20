@@ -7,6 +7,8 @@
 
 namespace app\commands;
 
+use app\models\base\Menu;
+use app\service\user\UserServices;
 use app\utils\base\Base;
 use yii\console\Controller;
 use yii\console\ExitCode;
@@ -31,10 +33,9 @@ class HelloController extends Controller
      */
     public function actionIndex($message = 'hello world')
     {
-        for ($i =1; $i<=8; $i++) {
-            echo $i % 7;
-            echo "\n";
-        }
+        $menus = Menu::find()->asArray()->all();
+        $tree = UserServices::getInstance()->tree($menus);
+        echo Json::encode($tree) . "\n";
 
     }
 

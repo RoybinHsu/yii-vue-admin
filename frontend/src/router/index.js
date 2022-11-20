@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { formatBackendMenuList } from '@/utils'
 
 Vue.use(Router)
 
@@ -36,7 +37,8 @@ export const constantRoutes = [
     name: 'Login',
     component: () => import('@/views/login/index'),
     hidden: true,
-    meta: { title: '登录' }
+    meta: { title: '登录' },
+    children: []
   },
   // {
   //   path: '/register',
@@ -47,133 +49,116 @@ export const constantRoutes = [
   // },
   {
     path: '/404',
+    redirect: '',
     component: () => import('@/views/404'),
     hidden: true,
-    meta: { title: '未找到页面' }
+    meta: { title: '未找到页面' },
+    children: []
   },
   {
     path: '/',
     component: Layout,
-    redirect: 'dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard' },
-      noCache: true,
-      affix: true
-    }]
+    name: 'Home',
+    redirect: '/home',
+    hidden: false,
+    children: [
+      {
+        path: 'home',
+        name: 'HomeIndex',
+        redirect: '',
+        hidden: false,
+        component: () => import('@/views/home/index'),
+        meta: { title: '首页', icon: 'el-icon-s-home', noCache: false, affix: true },
+        children: []
+      }
+    ]
+  },
+  {
+    path: '/site',
+    name: 'Site',
+    redirect: '/site/menu',
+    hidden: false,
+    component: Layout,
+    meta: { title: '网站管理', icon: 'el-icon-s-management' },
+    children: [
+      {
+        path: 'menu',
+        api: '/user/menus',
+        name: 'SiteMenu',
+        redirect: '',
+        hidden: false,
+        component: () => import('@/views/site/menu'),
+        meta: { title: '菜单管理', icon: 'el-icon-s-operation' },
+        children: []
+      }
+    ]
   },
   {
     path: '/example',
-    component: Layout,
+    api: '',
     name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    redirect: '/site/menu',
+    hidden: false,
+    component: Layout,
+    meta: { title: '样例模板', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'table',
-        name: 'Table',
+        name: 'ExampleTable',
+        redirect: '',
+        hidden: false,
         component: () => import('@/views/table/index'),
-        meta: { title: '表格', icon: 'table' }
+        meta: { title: '样例表格', icon: 'table', noCache: false },
+        children: []
       },
       {
         path: 'tree',
-        name: 'Tree',
+        api: '/tree',
+        name: 'ExampleTree',
+        redirect: '',
+        hidden: false,
         component: () => import('@/views/tree/index'),
-        meta: { title: '树形', icon: 'tree' }
+        meta: { title: '样例树形', icon: 'tree', noCache: false },
+        children: []
       }
     ]
   },
   {
     path: '/form',
+    name: 'Form',
+    redirect: '/form/index',
+    hidden: false,
     component: Layout,
+    meta: { title: '表单', icon: 'form' },
     children: [
       {
         path: 'index',
-        name: 'Form',
+        name: 'FormIndex',
+        redirect: '',
+        hidden: false,
         component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
-      },
-      {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Menu2',
-        meta: { title: 'menu2' }
-      }
-    ]
-  },
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        meta: { title: '表单提交', icon: 'form' },
+        children: []
       }
     ]
   },
   // 404 page must be placed at the end !!!
   {
     path: '*',
+    name: 'Any',
     redirect: '/404',
-    hidden: true
+    hidden: true,
+    children: []
   },
   // 404 page must be placed at the end !!!
-  { path: '/:catchAll(.*)', redirect: '/404', hidden: true }
+  {
+    path: '/:catchAll(.*)',
+    name: 'CatchAll',
+    redirect: '/404',
+    hidden: true,
+    children: []
+  }
 ]
-
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),

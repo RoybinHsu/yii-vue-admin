@@ -10,6 +10,7 @@
       class="filter-tree"
       default-expand-all
     />
+    <el-button @click="test">点击</el-button>
 
   </div>
 </template>
@@ -71,6 +72,9 @@ export default {
     filterNode(value, data) {
       if (!value) return true
       return data.label.indexOf(value) !== -1
+    },
+    test() {
+      this.$router.push('/form/index')
     }
   }
 }

@@ -50,19 +50,35 @@ class Response extends BaseObject
         $response->headers->set('Trace-Id', TRACE_ID);
         if (is_array($response->data)) {
             if (!$response->isSuccessful) {
-                $trace = implode("\n", ($response->data['stack-trace'] ?? []));
-                $msg   = 'name:' . ($response->data['name'] ?? '') . ' message:' . ($response->data['message'] ?? '') . ' file:' . ($response->data['file'] ?? '') . ' line:' . ($response->data['line'] ?? '') . ' trace:' . $trace;
+                $trace = implode(" ", ($response->data['stack-trace'] ?? []));
+                $msg   = 'name:' . ($response->data['name'] ?? '');
+                if (!empty($response->data['message'])) {
+                    $msg .= ' message:' . ($response->data['message'] ?? '');
+                }
+                if (!empty($response->data['file'])) {
+                    $msg .= ' file:' . ($response->data['file'] ?? '');
+                }
+                if (!empty($response->data['line'])) {
+                    $msg .= ' line:' . ($response->data['line'] ?? '');
+                }
+                if (!empty($trace)) {
+                    $msg .= ' trace:' . $trace;
+                }
                 Yii::error($msg);
                 $msg        = strtolower($msg);
                 $return_msg = $response->data['message'] ?? '请求失败';
                 foreach (self::IGNORE_ERR as $s) {
                     if (strpos($msg, $s) !== false) {
-                        $return_msg = '系统错误';
+                        $return_msg = '系统内部错误';
                         break;
                     }
                 }
+                $code = self::ERR_CODE;
+                if (!empty($response->data['status'])) {
+                    $code = $response->data['status'];
+                }
                 $response->data = Yii::$app->helper->responseArray(
-                    $response->data['code'] ?? self::ERR_CODE,
+                    $code,
                     $return_msg,
                     []
                 );

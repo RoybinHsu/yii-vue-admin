@@ -8,21 +8,27 @@ import qs from 'qs'
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000, // request timeout
-  transformRequest: [function(data, headers) {
-    if (headers['Content-Type'] && headers['Content-Type'] === 'multipart/form-data') {
-      return data
-    }
-    data = qs.stringify(data)
-    return data
-  }]
+  timeout: 5000 // request timeout
 })
 
 // request interceptor
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-
+    if (config.method.toLowerCase() === 'post') {
+      // post请求
+      // eslint-disable-next-line
+      if (config.requestJson === undefined || config.requestJson === true) {
+        config.headers.post['Content-Type'] = 'application/json; charset=UTF-8'
+        config.data = JSON.stringify(config.data)
+      } else {
+        config.data = qs.stringify(config.data)
+      }
+    } else {
+      config.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
+      // config.data = qs.stringify(config.data)
+      config.params = config.data
+    }
     if (store.getters.token) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
