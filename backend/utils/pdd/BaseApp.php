@@ -6,6 +6,9 @@ use app\utils\base\Base;
 use app\utils\general\PlatformAppInterface;
 use yii\base\InvalidArgumentException;
 
+/**
+ * @property $redirect_url
+ */
 class BaseApp extends Base implements PlatformAppInterface
 {
     /**
@@ -23,15 +26,6 @@ class BaseApp extends Base implements PlatformAppInterface
      * @var string
      */
     public string $app_secret = '';
-
-
-    /**
-     * 授权登录后重定向url
-     *
-     * @var string
-     */
-    public string $redirect_url = '';
-
 
     /**
      * 授权获取code
@@ -93,7 +87,7 @@ class BaseApp extends Base implements PlatformAppInterface
     /**
      * @inheritDoc
      */
-    public function getAccessToken(string $refresh_token = null): string
+    public function getAccessToken(): string
     {
         // 可从缓存中获取access_token用于api的请求
         return '';

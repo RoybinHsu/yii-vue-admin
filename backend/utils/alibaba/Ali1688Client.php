@@ -11,8 +11,8 @@ class Ali1688Client extends Client
      *
      * @var string
      */
-    //public string $host = 'https://gw.open.1688.com/openapi';
-    public string $host = 'http://qa.jzcassociates.com:8085';
+    public string $host = 'https://gw.open.1688.com/openapi';
+    //public string $host = 'http://qa.jzcassociates.com:8085';
 
     /**
      * 端口

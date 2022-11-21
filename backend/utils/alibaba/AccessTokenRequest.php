@@ -40,8 +40,7 @@ class AccessTokenRequest extends BaseRequest
      */
     public function getParams(): array
     {
-        $common = parent::getParams();
-        return ArrayHelper::merge($common, [
+        return [
             RequestOptions::QUERY =>
                 [
                     'client_id'          => $this->app->client_id,
@@ -51,7 +50,7 @@ class AccessTokenRequest extends BaseRequest
                     'redirect_uri'       => $this->redirect_uri,
                     'code'               => $this->code,
                 ],
-        ]);
+        ];
     }
 
     /**
@@ -59,7 +58,7 @@ class AccessTokenRequest extends BaseRequest
      */
     public function getUri(): string
     {
-        return '/openapi/http/1/system.oauth2/getToken/' . $this->app->client_id;
+        return '/http/1/system.oauth2/getToken/' . $this->app->client_id;
     }
 
     /**

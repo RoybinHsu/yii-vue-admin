@@ -2,6 +2,11 @@
 
 namespace app\utils\pdd;
 
+/**
+ * @property $client_id
+ * @property $app_secret
+ * @property $redirect_url
+ */
 class Cuckoo extends BaseApp
 {
     /**
@@ -20,10 +25,6 @@ class Cuckoo extends BaseApp
      */
     public string $app_secret = 'Abshfsdhjf123123';
 
-    /**
-     * @var string 参数标识当前授权的站点，直接填写1688
-     */
-    public string $site = '1688';
 
     /**
      * 授权登录后重定向url
@@ -32,11 +33,5 @@ class Cuckoo extends BaseApp
      */
     public string $redirect_url = 'http://fly.com/auth';
 
-    /**
-     * 自定义参数
-     *
-     * @var string
-     */
-    public string $state = 'code123';
 
 }
