@@ -9,6 +9,9 @@ namespace app\commands;
 
 use app\models\base\Menu;
 use app\service\user\UserServices;
+use app\utils\alibaba\AccessTokenRequest;
+use app\utils\alibaba\Ali1688Client;
+use app\utils\alibaba\Cuckoo;
 use app\utils\base\Base;
 use yii\console\Controller;
 use yii\console\ExitCode;
@@ -33,9 +36,18 @@ class HelloController extends Controller
      */
     public function actionIndex($message = 'hello world')
     {
-        $menus = Menu::find()->asArray()->all();
-        $tree = UserServices::getInstance()->tree($menus);
-        echo Json::encode($tree) . "\n";
+        $arr = [
+            'client_id'    => 1,
+            'data_type'    => 'XML',
+            'type'         => 'pdd.order.number.list.get',
+            'timestamp'    => '1480411125',
+            'order_status' => '1',
+            'page'         => '1',
+            'page_size'    => '10',
+            'access_token' => 'asd78172s8ds9a921j9qqwda12312w1w21211',
+
+        ];
+        \app\utils\pdd\Cuckoo::getInstance()->sign($arr);
 
     }
 
