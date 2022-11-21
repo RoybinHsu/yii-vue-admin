@@ -4,16 +4,12 @@ namespace app\utils\alibaba;
 
 use app\utils\base\Base;
 use app\utils\general\PlatformAppInterface;
-use app\utils\general\RequestInterface;
 
 /**
  * @property $client_id
  * @property $app_secret
  * @property $site
- * @property $redirect_url
  * @property $authorize_url
- * @property $get_token_url
- * @property $state
  *
  */
 abstract class BaseApp extends Base implements PlatformAppInterface
@@ -40,27 +36,6 @@ abstract class BaseApp extends Base implements PlatformAppInterface
     public string $site = '1688';
 
     /**
-     * 授权登录后重定向url
-     *
-     * @var string
-     */
-    public string $redirect_url = '';
-
-    /**
-     * 自定义参数
-     *
-     * @var string
-     */
-    public string $state = '';
-
-    /**
-     * 授权码
-     *
-     * @var string
-     */
-    public string $code = '';
-
-    /**
      * 授权获取code
      *
      * @var string
@@ -79,47 +54,37 @@ abstract class BaseApp extends Base implements PlatformAppInterface
     /**
      * @inheritDoc
      */
-    public function sign(array $data): string
+    public function sign(array $data, $url_info = ''): string
     {
-        $code_arr   = [
-            'client_id'    => $this->client_id,
-            'redirect_uri' => $this->redirect_url,
-            'site'         => $this->site,
-            'state'        => $this->state,
-        ];
-        $ali_params = [];
-        foreach ($code_arr as $key => $val) {
+        if ($data) {
+            foreach ($data as &$param) {
+                $param = is_string($param) ? $param : json_encode($param, JSON_UNESCAPED_UNICODE);
+            }
+        }
+        foreach ($data as $key => $val) {
             $ali_params[] = $key . $val;
         }
         sort($ali_params);
         $sign_str = join('', $ali_params);
+        $sign_str = $url_info . $sign_str;
         return strtoupper(bin2hex(hash_hmac("sha1", $sign_str, $this->app_secret, true)));
     }
 
-    /**
-     * @param $data
-     *
-     * @return void
-     */
-    public function formatData(&$data)
-    {
-        $data['_aop_timestamp'] = time();
-        $data['access_token']   = $this->getAccessToken();
-        $data['_aop_signature'] = $this->sign($data);
-    }
 
     /**
      * 生成获取code的url
      *
+     * @param string $state
+     *
      * @return string
      */
-    public function authorizeUrl(): string
+    public function authorizeUrl(string $state = ''): string
     {
         $query = [
             'client_id'    => $this->client_id,
             'site'         => $this->site,
             'redirect_uri' => $this->redirect_url,
-            'state'        => $this->state,
+            'state'        => $state,
         ];
         return $this->authorize_url . '?' . http_build_query($query, '', '&');
     }
@@ -127,29 +92,30 @@ abstract class BaseApp extends Base implements PlatformAppInterface
     /**
      * 通过refresh_token 获取access_token
      *
+     * @param string|null $code
      * @param string|null $refresh_token
      *
      * @return string
      */
-    public function getToken(string $refresh_token = null): string
+    public function getToken(string $code = null, string $refresh_token = null): string
     {
         if ($refresh_token === null) {
             // 获取token
             $data = [
+                'app'          => new Cuckoo(),
                 'redirect_uri' => $this->redirect_url,
-                'code'         => $this->code,
+                'code'         => $code,
                 'grant_type'   => 'authorization_code',
             ];
-
         } else {
             // 通过refresh_token 获取token
             $data = [
+                'app'          => new Cuckoo(),
                 'redirect_uri' => $this->redirect_url,
-                'code'         => $this->code,
                 'grant_type'   => 'refresh_token',
             ];
         }
-        $request = Cuckoo::getInstance()->createHttpRequest(AccessTokenRequest::class, $data);
+        $request = new AccessTokenRequest($data);
         $client  = Ali1688Client::getInstance();
         $res     = $client->send($request);
         if ($res) {
@@ -169,7 +135,7 @@ abstract class BaseApp extends Base implements PlatformAppInterface
      */
     public function getAccessToken(): string
     {
-
+        return '';
     }
 
     /**

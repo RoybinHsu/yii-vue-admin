@@ -2,25 +2,11 @@
 
 namespace app\utils\alibaba;
 
-use app\utils\general\RequestInterface;
 use GuzzleHttp\RequestOptions;
-use yii\base\BaseObject;
+use yii\helpers\ArrayHelper;
 
-class AccessTokenRequest extends BaseObject implements RequestInterface
+class AccessTokenRequest extends BaseRequest
 {
-
-    /**
-     * app key
-     *
-     * @var string
-     */
-    public string $client_id;
-
-    /**
-     * @var string
-     */
-    public string $app_secret;
-
     /**
      * 为授权类型
      *
@@ -50,39 +36,22 @@ class AccessTokenRequest extends BaseObject implements RequestInterface
     public string $code = '';
 
     /**
-     *
-     *
-     * @var string
-     */
-    //public string $_aop_signature;
-
-
-    /**
-     * @inheritDoc
-     */
-    public function getHeaders(): array
-    {
-        return [
-            RequestOptions::HEADERS => [],
-        ];
-    }
-
-    /**
      * @inheritDoc
      */
     public function getParams(): array
     {
-        return [
+        $common = parent::getParams();
+        return ArrayHelper::merge($common, [
             RequestOptions::QUERY =>
                 [
-                    'client_id'          => $this->client_id,
-                    'client_secret'      => $this->app_secret,
+                    'client_id'          => $this->app->client_id,
+                    'client_secret'      => $this->app->app_secret,
                     'grant_type'         => $this->grant_type,
                     'need_refresh_token' => $this->need_refresh_token,
                     'redirect_uri'       => $this->redirect_uri,
                     'code'               => $this->code,
                 ],
-        ];
+        ]);
     }
 
     /**
@@ -90,7 +59,7 @@ class AccessTokenRequest extends BaseObject implements RequestInterface
      */
     public function getUri(): string
     {
-        return '/openapi/http/1/system.oauth2/getToken/' . $this->client_id;
+        return '/openapi/http/1/system.oauth2/getToken/' . $this->app->client_id;
     }
 
     /**

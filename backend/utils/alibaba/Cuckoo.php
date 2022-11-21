@@ -39,11 +39,5 @@ class Cuckoo extends BaseApp
      */
     public string $redirect_url = 'http://fly.com/auth';
 
-    /**
-     * 自定义参数
-     *
-     * @var string
-     */
-    public string $state = 'code123';
 
 }

@@ -7,15 +7,15 @@ class Cuckoo extends BaseApp
     /**
      * 应用详情中查看应用详情中client_id字段值得到
      *
-     * @see https://open.pinduoduo.com/application/document/browse?idStr=BD3A776A4D41D5F5
+     * @see https://open.pinduoduo.com/application/document/browse?idStr=3268DFFA53FC8FB4
      * @var string
      */
     public string $client_id = '1111';
 
     /**
-     * 应用秘钥 App Secret
+     * 密钥，为接口调用提供安全保障
      *
-     * @see https://open.1688.com/doc/guide.htm
+     * @see https://open.pinduoduo.com/application/document/browse?idStr=3268DFFA53FC8FB4
      * @var string
      */
     public string $app_secret = 'Abshfsdhjf123123';

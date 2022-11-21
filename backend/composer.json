@@ -20,7 +20,8 @@
         "yiisoft/yii2-symfonymailer": "~2.0.3",
         "sizeg/yii2-jwt": "^2.0",
         "yiisoft/yii2-redis": "~2.0.0",
-        "guzzlehttp/guzzle": "^7.3"
+        "guzzlehttp/guzzle": "^7.3",
+        "javareact/alibaba_open": "^1.1"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

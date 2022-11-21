@@ -12,6 +12,7 @@ use app\service\user\UserServices;
 use app\utils\alibaba\AccessTokenRequest;
 use app\utils\alibaba\Ali1688Client;
 use app\utils\alibaba\Cuckoo;
+use app\utils\alibaba\product\DeleteRequest;
 use app\utils\base\Base;
 use yii\console\Controller;
 use yii\console\ExitCode;
@@ -48,6 +49,11 @@ class HelloController extends Controller
 
         ];
         \app\utils\pdd\Cuckoo::getInstance()->sign($arr);
+
+        $request = new DeleteRequest(['product_id' => 1]);
+        $res = Ali1688Client::getInstance()->send($request);
+        dd($res);
+
 
     }
 

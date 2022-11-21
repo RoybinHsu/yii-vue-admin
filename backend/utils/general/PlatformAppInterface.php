@@ -6,15 +6,6 @@ interface PlatformAppInterface
 {
 
     /**
-     * 按要求格式化参数
-     *
-     * @param array $data
-     *
-     * @return mixed
-     */
-    public function formatData(array &$data);
-
-    /**
      * 生成签名算法
      *
      *
@@ -27,9 +18,11 @@ interface PlatformAppInterface
     /**
      * 生成获取code的url
      *
+     * @param string $state
+     *
      * @return string
      */
-    public function authorizeUrl(): string;
+    public function authorizeUrl(string $state): string;
 
 
     /**
@@ -42,10 +35,11 @@ interface PlatformAppInterface
 
     /**
      * @param string|null $refresh_token
+     * @param string|null $code
      *
      * @return mixed
      */
-    public function getToken(string $refresh_token = null);
+    public function getToken(string $code = null, string $refresh_token = null);
 
     /**
      * @param array $data

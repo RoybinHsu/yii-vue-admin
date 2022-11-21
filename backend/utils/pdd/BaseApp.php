@@ -9,17 +9,17 @@ use yii\base\InvalidArgumentException;
 class BaseApp extends Base implements PlatformAppInterface
 {
     /**
-     * 应用的 App Key
+     * 应用详情中查看应用详情中client_id字段值得到
      *
-     * @see https://open.1688.com/doc/guide.htm
+     * @see https://open.pinduoduo.com/application/document/browse?idStr=BD3A776A4D41D5F5
      * @var string
      */
     public string $client_id = '';
 
     /**
-     * 应用秘钥 App Secret
+     * 密钥，为接口调用提供安全保障
      *
-     * @see https://open.1688.com/doc/guide.htm
+     * @see https://open.pinduoduo.com/application/document/browse?idStr=3268DFFA53FC8FB4
      * @var string
      */
     public string $app_secret = '';
@@ -32,12 +32,6 @@ class BaseApp extends Base implements PlatformAppInterface
      */
     public string $redirect_url = '';
 
-    /**
-     * 自定义参数
-     *
-     * @var string
-     */
-    public string $state = '';
 
     /**
      * 授权获取code
@@ -65,13 +59,13 @@ class BaseApp extends Base implements PlatformAppInterface
     /**
      * @inheritDoc
      */
-    public function authorizeUrl(): string
+    public function authorizeUrl(string $state = ''): string
     {
         $query = [
             'client_id'     => $this->client_id,
             'response_type' => 'code',
             'redirect_uri'  => urlencode($this->redirect_url),
-            'state'         => $this->state,
+            'state'         => $state,
             'web'           => 'web',
         ];
         return $this->authorize_url . '?' . http_build_query($query, '', '&');
@@ -85,7 +79,7 @@ class BaseApp extends Base implements PlatformAppInterface
      *
      * @return string
      */
-    public function getToken($refresh_token = null): string
+    public function getToken($code = null, $refresh_token = null): string
     {
         if ($refresh_token === null) {
             // 通过授权码 code 获取 access_token
