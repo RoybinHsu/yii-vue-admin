@@ -9,9 +9,10 @@ ERP系统项目
 
 #### 安装教程
 
-1.  php 7.4 
-2.  mysql 8.0
-3.  nginx
+1. php 7.4 
+2. mysql 8.0
+3. nginx
+4. linux
 
 #### 使用说明
 
