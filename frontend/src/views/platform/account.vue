@@ -47,6 +47,7 @@
             prop="access_token_expire_at">
             <el-tag
               effect="plain"
+              size="small"
               slot-scope="scope"
               :type="scope.row.access_token_type">{{ scope.row.access_token_expire_at }}</el-tag>
           </el-table-column>
@@ -54,7 +55,11 @@
             align="center"
             label="refresh_token过期时间"
             prop="refresh_token_expire_at">
-            <el-tag slot-scope="scope" :type="scope.row.refresh_token_type">{{ scope.row.refresh_token_expire_at }}</el-tag>
+            <el-tag
+              size="small"
+              effect="plain"
+              slot-scope="scope"
+              :type="scope.row.refresh_token_type">{{ scope.row.refresh_token_expire_at }}</el-tag>
           </el-table-column>
           <el-table-column
             align="center"
