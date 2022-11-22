@@ -49,11 +49,13 @@ class Response extends BaseObject
         $response = $event->sender;
         $response->headers->set('Trace-Id', TRACE_ID);
         if (is_array($response->data)) {
+            $return_msg = '系统内部错误';
             if (!$response->isSuccessful) {
                 $trace = implode(" ", ($response->data['stack-trace'] ?? []));
                 $msg   = 'name:' . ($response->data['name'] ?? '');
                 if (!empty($response->data['message'])) {
-                    $msg .= ' message:' . ($response->data['message'] ?? '');
+                    $msg        .= ' message:' . ($response->data['message'] ?? '');
+                    $return_msg = $response->data['message'];
                 }
                 if (!empty($response->data['file'])) {
                     $msg .= ' file:' . ($response->data['file'] ?? '');
@@ -65,8 +67,7 @@ class Response extends BaseObject
                     $msg .= ' trace:' . $trace;
                 }
                 Yii::error($msg);
-                $msg        = strtolower($msg);
-                $return_msg = $response->data['message'] ?? '请求失败';
+                $msg = strtolower($return_msg);
                 foreach (self::IGNORE_ERR as $s) {
                     if (strpos($msg, $s) !== false) {
                         $return_msg = '系统内部错误';

@@ -189,7 +189,7 @@ export default {
           const routers = formatBackendMenuList(this.$router.options.routes)
           uploadMenus(routers).then(res => {
             this.$message.success('菜单数据同步成功')
-            this.search()
+            window.location.reload()
           })
         }
       })
@@ -203,8 +203,5 @@ export default {
 </script>
 
 <style scoped>
-.pagination-box {
-  margin-top: 10px;
-  text-align: right;
-}
+
 </style>

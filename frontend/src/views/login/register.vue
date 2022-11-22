@@ -39,11 +39,10 @@
 </template>
 
 <script>
-import {validUsername, validPhone, validPassword, validEmail} from '@/utils/validate'
-import {Message} from "element-ui"
+import { validUsername, validPhone, validPassword, validEmail } from '@/utils/validate'
 
 export default {
-  name: "Register",
+  name: 'Register',
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
@@ -67,15 +66,15 @@ export default {
       }
     }
     const passwordConfirm = (rule, value, callback) => {
-        if (!validPassword(value)) {
-          callback(new Error('密码必须是6-18长度 包含字母, 数字和符号'))
+      if (!validPassword(value)) {
+        callback(new Error('密码必须是6-18长度 包含字母, 数字和符号'))
+      } else {
+        if (value !== this.form.password) {
+          callback(new Error('两次密码输入不一致'))
         } else {
-          if (value !== this.form.password) {
-            callback(new Error('两次密码输入不一致'))
-          } else {
-            callback()
-          }
+          callback()
         }
+      }
     }
     const validateEmail = (rule, value, callback) => {
       if (!validEmail(value)) {
@@ -93,11 +92,11 @@ export default {
         password_confirm: ''
       },
       registerRules: {
-        username: [{required: true, trigger: 'blur', validator: validateUsername}],
-        phone: [{required: true, trigger: 'blur', validator: validatePhone}],
-        email: [{required: true, trigger: 'blur', validator: validateEmail}],
-        password: [{required: true, trigger: 'blur', validator: validatePassword}],
-        password_confirm: [{required: true, trigger: 'blur', validator: passwordConfirm}],
+        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        phone: [{ required: true, trigger: 'blur', validator: validatePhone }],
+        email: [{ required: true, trigger: 'blur', validator: validateEmail }],
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        password_confirm: [{ required: true, trigger: 'blur', validator: passwordConfirm }]
       }
     }
   },
@@ -114,7 +113,7 @@ export default {
         }
       })
 
-    },
+    }
   }
 }
 </script>

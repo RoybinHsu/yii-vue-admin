@@ -4,6 +4,7 @@ namespace app\utils\alibaba;
 
 use app\utils\base\Base;
 use app\utils\general\PlatformAppInterface;
+use yii\base\Component;
 
 /**
  * @property $client_id
@@ -12,7 +13,7 @@ use app\utils\general\PlatformAppInterface;
  * @property $authorize_url
  *
  */
-abstract class BaseApp extends Base implements PlatformAppInterface
+abstract class BaseApp extends Component implements PlatformAppInterface
 {
     /**
      * 应用的 App Key

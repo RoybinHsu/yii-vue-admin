@@ -10,14 +10,13 @@ use yii\base\BaseObject;
  */
 class Cuckoo extends BaseApp
 {
-
     /**
      * 应用的 App Key
      *
      * @see https://open.1688.com/doc/guide.htm
      * @var string
      */
-    public string $client_id = '1111';
+    public string $client_id = '';
 
     /**
      * 应用秘钥 App Secret
@@ -25,7 +24,7 @@ class Cuckoo extends BaseApp
      * @see https://open.1688.com/doc/guide.htm
      * @var string
      */
-    public string $app_secret = 'Abshfsdhjf123123';
+    public string $app_secret = '';
 
     /**
      * @var string 参数标识当前授权的站点，直接填写1688
@@ -37,7 +36,7 @@ class Cuckoo extends BaseApp
      *
      * @var string
      */
-    public string $redirect_url = 'http://fly.com/auth';
+    public string $redirect_url = '';
 
 
 }

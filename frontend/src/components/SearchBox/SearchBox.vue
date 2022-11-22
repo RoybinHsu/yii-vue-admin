@@ -4,10 +4,11 @@
       <el-row>
         <el-col :span="rowSpan" v-for="filter in filters" :key="filter.key">
           <el-form-item :label="filter.labelText">
-            <el-select v-if="filter.type === 'select'" v-model="model[filter.name]" placeholder="请选择">
+            <el-select v-if="filter.type === 'select'" v-model="model[filter.name]" :size="itemSize" placeholder="请选择" style="width:100%;">
               <el-option
-                v-for="item in options"
+                v-for="item in filter.options"
                 :key="item.value"
+                :value="item.value"
                 :label="item.label"
               >
               </el-option>

@@ -50,7 +50,7 @@ class BaseRequest extends BaseObject implements RequestInterface
     {
         parent::__construct($config);
         if (empty($this->app)) {
-            $this->app = Cuckoo::getInstance();
+            $this->app = new Cuckoo();
         }
         if (empty($this->api)) {
             throw new InvalidArgumentException('请设置调用api');

@@ -15,7 +15,7 @@ class Cuckoo extends BaseApp
      * @see https://open.pinduoduo.com/application/document/browse?idStr=3268DFFA53FC8FB4
      * @var string
      */
-    public string $client_id = '1111';
+    public string $client_id = '';
 
     /**
      * 密钥，为接口调用提供安全保障
@@ -23,7 +23,7 @@ class Cuckoo extends BaseApp
      * @see https://open.pinduoduo.com/application/document/browse?idStr=3268DFFA53FC8FB4
      * @var string
      */
-    public string $app_secret = 'Abshfsdhjf123123';
+    public string $app_secret = '';
 
 
     /**
@@ -31,7 +31,7 @@ class Cuckoo extends BaseApp
      *
      * @var string
      */
-    public string $redirect_url = 'http://fly.com/auth';
+    public string $redirect_url = '';
 
 
 }

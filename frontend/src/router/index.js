@@ -94,6 +94,36 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/platform',
+    name: 'Platform',
+    redirect: '/platform/account',
+    hidden: true,
+    component: Layout,
+    meta: { title: '平台管理', icon: 'el-icon-s-platform' },
+    children: [
+      {
+        path: 'app',
+        api: '/platform/app/list',
+        name: 'PlatformApp',
+        redirect: '',
+        hidden: true,
+        component: () => import('@/views/platform/app'),
+        meta: { title: '平台应用', icon: 'el-icon-menu' },
+        children: []
+      },
+      {
+        path: 'distribution/pool',
+        api: '/platform/distribution/pool',
+        name: 'PlatformDistributionPool',
+        redirect: '',
+        hidden: true,
+        component: () => import('@/views/platform/distributionPool'),
+        meta: { title: '总分销池', icon: 'el-icon-collection' },
+        children: []
+      }
+    ]
+  },
+  {
     path: '/example',
     api: '',
     name: 'Example',

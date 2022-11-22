@@ -9,7 +9,7 @@ use yii\web\JsonParser;
 use yii\web\Request;
 use yii\web\Response;
 
-$timeZone = $queue = $logDate = $db = $params = $redis = null;
+$timeZone = $queue = $logDate = $db = $params = $redis = $components = null;
 require_once __DIR__ . '/common.php';
 
 $config = [
@@ -23,7 +23,7 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'defaultRoute' => '/site/index',
-    'components'   => [
+    'components'   => $components + [
             'request'      => [
                 'class'               => Request::class,
                 'parsers'             => [
@@ -42,9 +42,6 @@ $config = [
                 'class'             => Jwt::class,
                 'key'               => '6Yhf4ZwqQUWyROLT',
                 'jwtValidationData' => JwtValidationData::class,
-            ],
-            'helper'       => [
-                'class' => Helper::class,
             ],
             'cache'        => [
                 'class' => 'yii\caching\FileCache',

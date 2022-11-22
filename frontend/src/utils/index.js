@@ -2,8 +2,6 @@
  * Created by PanJiaChen on 16/11/18.
  */
 
-import { bool } from 'mockjs/src/mock/random/basic';
-
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
