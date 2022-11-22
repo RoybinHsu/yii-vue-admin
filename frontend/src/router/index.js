@@ -112,6 +112,16 @@ export const constantRoutes = [
         children: []
       },
       {
+        path: 'account',
+        api: '/platform/app/account',
+        name: 'PlatformAccount',
+        redirect: '',
+        hidden: true,
+        component: () => import('@/views/platform/account'),
+        meta: { title: '授权商家', icon: 'el-icon-shopping-bag-2' },
+        children: []
+      },
+      {
         path: 'distribution/pool',
         api: '/platform/distribution/pool',
         name: 'PlatformDistributionPool',

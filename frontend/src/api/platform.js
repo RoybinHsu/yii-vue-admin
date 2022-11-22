@@ -38,3 +38,17 @@ export function getAuthorizeUrl(data) {
     data
   })
 }
+
+/**
+ * 获取授权连接
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export function getAuthorizeAccountList(data) {
+  return request({
+    url: '/platform/app/account',
+    method: 'get',
+    data
+  })
+}
+

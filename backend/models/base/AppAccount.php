@@ -19,6 +19,11 @@ use Yii;
  */
 class AppAccount extends Base
 {
+    const STATUS_NOT = 0;// 未授权
+    const STATUS_YES = 1;// 已授权
+    const STATUS_ERR = 3;// 授权失败
+    const STATUS_EXP = 10; // 授权过期
+
     /**
      * {@inheritdoc}
      */
@@ -55,5 +60,26 @@ class AppAccount extends Base
             'created_at'              => 'Created At',
             'updated_at'              => 'Updated At',
         ];
+    }
+
+    /**
+     * 获取状态
+     *
+     * @param null $status
+     *
+     * @return string|string[]
+     */
+    public static function getStatus($status = null)
+    {
+        $map = [
+            self::STATUS_NOT => '未授权',
+            self::STATUS_YES => '已授权',
+            self::STATUS_ERR => '授权失败',
+            self::STATUS_EXP => '授权过期',
+        ];
+        if ($status === null) {
+            return $map;
+        }
+        return $map[$status] ?? '-';
     }
 }

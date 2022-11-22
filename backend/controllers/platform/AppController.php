@@ -84,4 +84,33 @@ class AppController extends AuthController
         return $this->returnOk(['url' => $url]);
     }
 
+    /**
+     * 获取授权商家列表
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function actionAccount(Request $request): Response
+    {
+        $platform = trim($request->get('platform', ''));
+        $app_name = trim($request->get('app_name', ''));
+        $status   = '' . trim($request->get('status', ''));
+        $page     = intval($request->get('page', ''));
+        $limit    = intval($request->get('limit', ''));
+        $filter   = [];
+        if ($platform) {
+            $filter['platform'] = $platform;
+        }
+        if ($app_name) {
+            $filter['app_name'] = $app_name;
+        }
+        if ($status !== '') {
+            $filter['status'] = $status;
+        }
+        $offset = ($page - 1) * $limit;
+        [$total, $data] = AppService::getInstance()->getAccountList($filter, $offset, $limit);
+        return $this->returnOk(['data' => $data, 'total' => $total]);
+    }
+
 }

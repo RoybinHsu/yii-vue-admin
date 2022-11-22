@@ -2,6 +2,8 @@
 
 namespace app\service\platform;
 
+use app\models\base\Account;
+use app\models\base\AppAccount;
 use app\models\base\PlatformApp;
 use app\models\User;
 use app\utils\base\Base;
@@ -61,5 +63,82 @@ class AppService extends Base
             $v['platform_name'] = PlatformApp::getPlatform($v['platform']);
         }
         return [intval($count), $data];
+    }
+
+    /**
+     * 获取授权商家列表
+     *
+     * @param array $filter
+     * @param int $offset
+     * @param int $limit
+     *
+     * @return array
+     */
+    public function getAccountList(array $filter = [], int $offset = 0, int $limit = 20): array
+    {
+        $model = AppAccount::find()->alias('a')
+            ->leftJoin(PlatformApp::tableName() . ' AS b', 'a.app_id=b.id')
+            ->leftJoin(Account::tableName() . ' AS c', 'a.account_id=c.id')
+            ->select([
+                'b.platform',
+                'b.app_name',
+                'c.owner_id',
+                'c.owner_name',
+                'a.access_token_expire_at',
+                'a.refresh_token_expire_at',
+                'a.status',
+                'a.created_at',
+            ])->asArray();
+        foreach ($filter as $k => $v) {
+            if ($v === '') {
+                continue;
+            }
+            switch ($k) {
+                case 'status':
+                    $model->andWhere(['a.status' => $v]);
+                    break;
+                case 'platform':
+                    $model->andWhere(['b.platform' => $v]);
+                    break;
+                case 'app_name':
+                    $model->andWhere(['b.app_name' => $v]);
+                    break;
+            }
+        }
+        $total = $model->count();
+        $data  = $model->offset($offset)->limit($limit)->all();
+        foreach ($data as &$v) {
+            $v['status_desc']             = AppAccount::getStatus($v['status']);
+            $v['access_token_type']       = $this->getTokenTagType($v['access_token_expire_at']);
+            $v['access_token_expire_at']  = date('Y-m-d', $v['access_token_expire_at']);
+            $v['refresh_token_type']      = $this->getTokenTagType($v['refresh_token_expire_at']);
+            $v['refresh_token_expire_at'] = date('Y-m-d', $v['refresh_token_expire_at']);
+            $v['platform_name']           = PlatformApp::getPlatform($v['platform']);
+        }
+        return [$total, $data];
+    }
+
+    /**
+     * token过期时间显示颜色
+     *
+     * @param $expire
+     *
+     * @return string
+     */
+    public function getTokenTagType($expire): string
+    {
+        $now  = time();
+        $diff = $expire - $now;
+        $type = 'info';
+        if ($diff > 60 * 86400) {
+            $type = 'success';
+        } elseif ($diff > 30 * 86400) {
+            $type = '';
+        } elseif ($diff > 20 * 86400) {
+            $type = 'warning';
+        } elseif ($diff > 5 * 86400) {
+            $type = 'danger';
+        }
+        return $type;
     }
 }
