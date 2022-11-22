@@ -33,8 +33,16 @@ class UserController extends AuthController
     public function actionGetToken(Request $request): Response
     {
         $data = $request->getBodyParams();
-        if (empty($data['username']) || empty($data['password'])) {
+        if (empty($data['username']) || empty($data['password']) || empty($data['captcha'])) {
             throw new Exception('缺少登录必须参数');
+        }
+        $config = [
+            'class' => CaptchaAction::class
+        ];
+        /** @var CaptchaAction $c */
+        $c = Yii::createObject($config, ['__captcha', $this]);
+        if (!$c->validate($data['captcha'], false)) {
+            throw new Exception('验证码输入不正确');
         }
         $user = User::findUser($data['username'], $data['username'], $data['username']);
         if ($user) {
@@ -141,10 +149,10 @@ class UserController extends AuthController
     /**
      * @param Request $request
      *
-     * @return array|string
+     * @return Response
      * @throws InvalidConfigException
      */
-    public function actionCaptcha(Request $request)
+    public function actionCaptcha(Request $request): Response
     {
         $config = [
             'class'     => CaptchaAction::class,

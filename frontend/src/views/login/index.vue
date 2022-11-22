@@ -43,7 +43,7 @@
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
-      <el-form-item>
+      <el-form-item prop="captcha">
           <el-col :span="12">
             <el-input
               ref="captcha"
@@ -110,7 +110,7 @@ export default {
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }],
-        captcha: [{ required: true, trigger: 'blur' }]
+        captcha: [{ required: true, trigger: 'blur', message: '缺少验证码' }, { min: 4, max: 4, message: '验证码长度为4个字符', trigger: 'blur' }]
       },
       loading: false,
       passwordType: 'password',
@@ -144,6 +144,7 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
+          console.log(this.loginForm)
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
