@@ -9,7 +9,7 @@ ERP系统项目
 
 #### 安装教程
 
-1.  xxxx
+1.  php 7.4 
 2.  xxxx
 3.  xxxx
 
