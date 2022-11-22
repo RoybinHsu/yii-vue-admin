@@ -11,7 +11,7 @@ ERP系统项目
 
 1.  php 7.4 
 2.  mysql 8.0
-3.  xxxx
+3.  nginx
 
 #### 使用说明
 
