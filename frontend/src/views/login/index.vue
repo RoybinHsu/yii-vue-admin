@@ -1,12 +1,15 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
-             label-position="left">
-
+    <el-form
+      ref="loginForm"
+      :model="loginForm"
+      :rules="loginRules"
+      class="login-form"
+      auto-complete="on"
+      label-position="left">
       <div class="title-container">
         <h3 class="title">后台管理系统</h3>
       </div>
-
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -21,7 +24,6 @@
           auto-complete="on"
         />
       </el-form-item>
-
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
@@ -41,11 +43,34 @@
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;"
-                 @click.native.prevent="handleLogin">登录
+      <el-form-item>
+          <el-col :span="12">
+            <el-input
+              ref="captcha"
+              v-model="loginForm.captcha"
+              placeholder="验证码"
+              name="captcha"
+              type="text"
+              tabindex="1"
+              auto-complete="off"
+            />
+          </el-col>
+          <el-col :span="12">
+            <el-image
+              @click="setCaptcha"
+              style="width: 99%; height: 45px;margin: 0px 0 -21px 0;"
+              :src="captcha_png"
+              fit="cover"></el-image>
+          </el-col>
+      </el-form-item>
+      <el-form-item>
+      </el-form-item>
+      <el-button
+        :loading="loading"
+        type="primary"
+        style="width:100%;margin-bottom:30px;"
+        @click.native.prevent="handleLogin">登录
       </el-button>
-
       <div class="tips">
         <span style="margin-right:20px;">没有账号? <el-button type="text" @click="register"> 注册 </el-button> </span>
         <!--        <span> password: any</span>-->
@@ -57,6 +82,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import { getCaptcha } from '@/api/user'
 
 export default {
   name: 'Login',
@@ -78,24 +104,30 @@ export default {
     return {
       loginForm: {
         username: '15600061158',
-        password: '2022*#8910Xsb'
+        password: '2022*#8910Xsb',
+        captcha: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        captcha: [{ required: true, trigger: 'blur' }]
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      captcha_png: ''
     }
   },
   watch: {
     $route: {
-      handler: function (route) {
+      handler: function(route) {
         this.redirect = route.query && route.query.redirect
       },
       immediate: true
     }
+  },
+  created() {
+    this.setCaptcha()
   },
   methods: {
     showPwd() {
@@ -125,6 +157,13 @@ export default {
     },
     register() {
       this.$router.replace({ path: 'register' })
+    },
+    setCaptcha() {
+      getCaptcha().then(res => {
+        this.captcha_png = res.data.captcha
+      }).catch(err => {
+        console.log(err)
+      })
     }
   }
 }

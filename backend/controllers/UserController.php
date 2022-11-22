@@ -11,6 +11,7 @@ use app\utils\jwt\Jwt;
 use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use yii\captcha\CaptchaAction;
 use yii\data\DataProviderInterface;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
@@ -113,8 +114,8 @@ class UserController extends AuthController
         $title     = trim($request->get('title', ''));
         $pid_title = trim($request->get('pid_title', ''));
         $api       = trim($request->get('api', ''));
-        $offset = ($page - 1) * $limit;
-        $filter = [];
+        $offset    = ($page - 1) * $limit;
+        $filter    = [];
         if ($path) {
             $filter['path'] = $path;
         }
@@ -123,7 +124,7 @@ class UserController extends AuthController
         }
         if ($pid_title) {
             $parent = Menu::find()->select('id')->where(['title' => $pid_title])->asArray()->all();
-            $pidS = ArrayHelper::getColumn($parent, 'id');
+            $pidS   = ArrayHelper::getColumn($parent, 'id');
             if (!$pidS) {
                 $pidS = [-1];
             }
@@ -137,5 +138,27 @@ class UserController extends AuthController
         return $this->returnOk(['menus' => $menus, 'total' => $count]);
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return array|string
+     * @throws InvalidConfigException
+     */
+    public function actionCaptcha(Request $request)
+    {
+        $config = [
+            'class'     => CaptchaAction::class,
+            'width'     => 221,
+            'height'    => 45,
+            'padding'   => 4,
+            'minLength' => 4,
+            'maxLength' => 4,
+            'offset'    => 30,
+        ];
+        $c      = Yii::createObject($config, ['__captcha', $this]);
+        $c->getVerifyCode(true);
+        $bin = $c->run();
+        return $this->returnOk(['captcha' => 'data:image/png;base64,' . base64_encode($bin)]);
+    }
 
 }

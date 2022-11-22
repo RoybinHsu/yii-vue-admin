@@ -8,6 +8,7 @@ use app\common\exception\ParamErrorException;
 use app\services\company\CompanyService;
 use Lcobucci\JWT\Token;
 use yii\base\Action;
+use yii\base\InvalidArgumentException;
 use yii\helpers\StringHelper;
 use yii\web\IdentityInterface;
 use yii\web\Request;
@@ -44,7 +45,7 @@ class JwtHttpBearerAuth extends \sizeg\jwt\JwtHttpBearerAuth
     {
         $authHeader = $request->getHeaders()->get('Authorization');
         if (!$this->isOptional(Yii::$app->requestedAction) && empty($authHeader)) {
-            throw new ParamErrorException('缺少权限参数[Authorization]');
+            throw new InvalidArgumentException('缺少权限参数[Authorization]');
         }
         if (preg_match('/^' . $this->schema . '\s+(.*?)$/', $authHeader, $matches)) {
             /**

@@ -29,6 +29,7 @@ class AuthController extends BaseController
             'optional' => [
                 '/user/login',
                 '/user/get-token',
+                '/user/captcha',
             ],
         ];
         return $behaviors;

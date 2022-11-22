@@ -67,3 +67,16 @@ export function uploadMenus(data) {
     data: data
   })
 }
+
+/**
+ * 获取图形验证码
+ * @returns {AxiosPromise}
+ */
+export function getCaptcha() {
+  return request({
+    url: '/user/captcha',
+    method: 'get',
+    data: { _: Date.now() }
+  })
+}
+
