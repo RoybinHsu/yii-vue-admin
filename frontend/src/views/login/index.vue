@@ -83,6 +83,7 @@
 <script>
 import { validUsername } from '@/utils/validate'
 import { getCaptcha } from '@/api/user'
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Login',
@@ -118,6 +119,11 @@ export default {
       captcha_png: ''
     }
   },
+  computed: {
+    ...mapGetters([
+      'reLogin'
+    ])
+  },
   watch: {
     $route: {
       handler: function(route) {
@@ -127,6 +133,9 @@ export default {
     }
   },
   created() {
+    if (this.reLogin !== null) {
+      this.$message.error(this.reLogin.message)
+    }
     this.setCaptcha()
   },
   methods: {

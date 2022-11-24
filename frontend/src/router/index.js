@@ -122,13 +122,23 @@ export const constantRoutes = [
         children: []
       },
       {
-        path: 'distribution/pool',
-        api: '/platform/distribution/pool',
-        name: 'PlatformDistributionPool',
+        path: 'dis/pool',
+        api: '/platform/dis/pool',
+        name: 'PlatformDisPool',
         redirect: '',
         hidden: true,
         component: () => import('@/views/platform/distributionPool'),
         meta: { title: '总分销池', icon: 'el-icon-collection' },
+        children: []
+      },
+      {
+        path: 'dis/mine',
+        api: '/platform/dis/mine',
+        name: 'PlatformDisMine',
+        redirect: '',
+        hidden: true,
+        component: () => import('@/views/platform/distributionPool'),
+        meta: { title: '我的分销', icon: 'el-icon-s-cooperation' },
         children: []
       }
     ]

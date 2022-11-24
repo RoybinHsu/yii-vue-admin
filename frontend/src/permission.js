@@ -10,7 +10,7 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login', '/register', '/404'] // no redirect whitelist
 
-router.beforeEach(async(to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   // start progress bar
   NProgress.start()
 
@@ -30,6 +30,7 @@ router.beforeEach(async(to, from, next) => {
         next()
       } else {
         try {
+          await store.dispatch('user/reLogin', { message: '未获取到用户信息, 请重新登录' })
           // get user info
           await store.dispatch('user/getInfo')
           // router.addRoutes(store.getters.menus)
@@ -45,7 +46,7 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-
+    await store.dispatch('user/reLogin', { message: '登录已失效, 请重新登录' })
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

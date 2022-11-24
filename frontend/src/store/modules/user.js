@@ -9,7 +9,8 @@ const getDefaultState = () => {
     avatar: '',
     phone: '',
     email: '',
-    menus: []
+    menus: [],
+    reLogin: null
   }
 }
 
@@ -36,6 +37,9 @@ const mutations = {
   },
   SET_MENUS: (state, menus) => {
     state.menus = menus
+  },
+  RE_LOGIN: (state, data) => {
+    state.reLogin = data
   }
 }
 
@@ -97,6 +101,11 @@ const actions = {
       commit('RESET_STATE')
       resolve()
     })
+  },
+
+  // 标记需要重新登录在登录也给出提示
+  reLogin({ commit }, data) {
+    commit('RE_LOGIN', data)
   }
 }
 
