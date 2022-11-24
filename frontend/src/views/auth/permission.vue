@@ -1,10 +1,10 @@
 <template>
-  <h1>Hello Distribution Pool</h1>
+  <h1>Hello AuthPermission</h1>
 </template>
 
 <script>
 export default {
-  name: 'PlatformDistributionPool'
+  name: 'AuthPermission'
 }
 </script>
 

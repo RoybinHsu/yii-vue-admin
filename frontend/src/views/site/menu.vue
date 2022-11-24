@@ -30,21 +30,15 @@
         >
           <el-table-column
             align="center"
-            width="60px"
-            label="Id"
-            prop="id">
+            label="标题"
+            width="90px"
+            prop="title">
           </el-table-column>
           <el-table-column
             align="center"
             label="父级"
             width="90px"
             prop="pid_title">
-          </el-table-column>
-          <el-table-column
-            align="center"
-            label="标题"
-            width="90px"
-            prop="title">
           </el-table-column>
           <el-table-column
             align="center"

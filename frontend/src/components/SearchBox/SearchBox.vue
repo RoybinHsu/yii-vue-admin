@@ -31,7 +31,7 @@
         <el-col :span="12" class="search-box-btn-group">
           <slot name="buttonGroup"></slot>
           <el-button type="danger" plain size="small" icon="el-icon-delete" @click="resetForm">重置</el-button>
-          <el-button type="primary" plain size="small" icon="el-icon-search" @click="onSubmit">搜索</el-button>
+          <el-button type="success" plain size="small" icon="el-icon-search" @click="onSubmit">搜索</el-button>
         </el-col>
       </el-row>
       <div class="clearfix"></div>

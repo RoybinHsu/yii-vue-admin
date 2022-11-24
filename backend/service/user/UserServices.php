@@ -93,7 +93,7 @@ class UserServices extends Base
     {
         $key = 'FLY:USER:MENU:' . shortMd5($raw);
         if (Yii::$app->redis->setnx($key, 1)) {
-            Yii::$app->redis->expire($key, 86400 * 7);
+            Yii::$app->redis->expire($key, 86400);
         } else {
             throw new Exception('请勿重复提交');
         }
@@ -107,7 +107,8 @@ class UserServices extends Base
      */
     public function delMenus()
     {
-        $sql = 'TRUNCATE TABLE `' . Menu::tableName() . '`';
+        Menu::deleteAll();
+        $sql = 'ALTER TABLE `' . Menu::tableName() . '` AUTO_INCREMENT=0';
         Yii::$app->db->createCommand($sql)->execute();
     }
 
