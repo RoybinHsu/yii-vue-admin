@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { formatBackendMenuList } from '@/utils'
 
 Vue.use(Router)
 
@@ -89,56 +88,6 @@ export const constantRoutes = [
         hidden: false,
         component: () => import('@/views/site/menu'),
         meta: { title: '菜单管理', icon: 'el-icon-s-operation' },
-        children: []
-      }
-    ]
-  },
-  {
-    path: '/platform',
-    name: 'Platform',
-    redirect: '/platform/account',
-    hidden: true,
-    component: Layout,
-    meta: { title: '平台管理', icon: 'el-icon-s-platform' },
-    children: [
-      {
-        path: 'app',
-        api: '/platform/app/list',
-        name: 'PlatformApp',
-        redirect: '',
-        hidden: true,
-        component: () => import('@/views/platform/app'),
-        meta: { title: '平台应用', icon: 'el-icon-menu' },
-        children: []
-      },
-      {
-        path: 'account',
-        api: '/platform/app/account',
-        name: 'PlatformAccount',
-        redirect: '',
-        hidden: true,
-        component: () => import('@/views/platform/account'),
-        meta: { title: '授权商家', icon: 'el-icon-shopping-bag-2' },
-        children: []
-      },
-      {
-        path: 'dis/pool',
-        api: '/platform/dis/pool',
-        name: 'PlatformDisPool',
-        redirect: '',
-        hidden: true,
-        component: () => import('@/views/platform/distributionPool'),
-        meta: { title: '总分销池', icon: 'el-icon-collection' },
-        children: []
-      },
-      {
-        path: 'dis/mine',
-        api: '/platform/dis/mine',
-        name: 'PlatformDisMine',
-        redirect: '',
-        hidden: true,
-        component: () => import('@/views/platform/distributionPool'),
-        meta: { title: '我的分销', icon: 'el-icon-s-cooperation' },
         children: []
       }
     ]

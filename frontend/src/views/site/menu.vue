@@ -70,7 +70,8 @@
             align="center"
             label="隐藏"
             width="80px"
-            prop="hidden">
+            prop="hidden"
+          >
             <el-tag slot-scope="scope" :type="scope.row.hidden == 1 ? 'info' : 'success'" size="small">
               {{ scope.row.hidden == 1 ? '隐藏' : '显示' }}
             </el-tag>
@@ -87,12 +88,6 @@
             width="80px"
             label="操作"
           >
-            <!--            <template slot-scope="scope">-->
-            <!--              <el-button-->
-            <!--                size="mini"-->
-            <!--                @click="handleEdit(scope.$index, scope.row)">添加-->
-            <!--              </el-button>-->
-            <!--            </template>-->
           </el-table-column>
         </el-table>
       </el-col>
@@ -117,8 +112,8 @@ import { formatBackendMenuList } from '@/utils'
 import { uploadMenus, getUserMenus } from '@/api/user'
 
 export default {
-  components: { SearchBox },
   name: 'Menu',
+  components: { SearchBox },
   data() {
     return {
       filters: [
