@@ -25,6 +25,7 @@ $ php yii migrate/up
 
 # 前端页面
 $ cd /path/to/fly/frontend
+# 设置api请求域名
 $ npm install
 
 
