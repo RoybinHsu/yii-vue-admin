@@ -18,6 +18,7 @@
 ```
 $ git clone ....fly.git fly
 $ cd /path/to/fly/backend 
+# 配置mysql redis 等
 $ composer install
 # 执行migrate
 $ php yii migrate/up
@@ -25,7 +26,7 @@ $ php yii migrate/up
 # 前端页面
 $ cd /path/to/fly/frontend
 $ npm install
-# 配置mysql redis 等
+
 
 # 启动前端页面
 $ npm run dev 
