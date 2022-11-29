@@ -32,6 +32,7 @@ class AuthController extends BaseController
      */
     private array $_optional = [
         '/auth/user/login',
+        '/auth/user/logout',
         '/auth/user/get-token',
         '/auth/user/captcha',
     ];
