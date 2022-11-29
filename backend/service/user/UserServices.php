@@ -10,6 +10,7 @@ use Yii;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
+use yii\rbac\Permission;
 
 class UserServices extends Base
 {
@@ -31,13 +32,14 @@ class UserServices extends Base
             throw new Exception('用户不存在');
         }
         return [
-            'id'       => $model->id,
-            'username' => $model->username,
-            'phone'    => $model->phone,
-            'email'    => $model->email,
-            'status'   => $model->status,
-            'avatar'   => 'a' . (($model->id % 8) + 1) . '.jpg',
-            'menus'    => $this->getUserMenu($id),
+            'id'          => $model->id,
+            'username'    => $model->username,
+            'phone'       => $model->phone,
+            'email'       => $model->email,
+            'status'      => $model->status,
+            'avatar'      => 'a' . (($model->id % 8) + 1) . '.jpg',
+            'menus'       => $this->getUserMenu($id),
+            'permissions' => $this->getPermissions($id),
         ];
 
     }
@@ -63,7 +65,7 @@ class UserServices extends Base
         $model = Menu::find()->orderBy(['hidden' => SORT_ASC, 'order' => SORT_ASC]);
         if ($tree) {
             $menus = $model->where(['hidden' => Menu::SHOW])->asArray()->all();
-            return $this->tree($menus, 0, Yii::$app->user->getId());
+            return $this->tree($menus, 0, $id);
         } else {
             foreach ($filter as $k => $v) {
                 if (!$v) {
@@ -167,7 +169,7 @@ class UserServices extends Base
                 $c['meta']     = json_decode($v['meta'], true);
                 if ($child) {
                     $c['children'] = $child;
-                    $menus[] = $c;
+                    $menus[]       = $c;
                 } else {
                     // 标识最底层菜单 检查api权限
                     if ($this->isRole()) {
@@ -283,6 +285,18 @@ class UserServices extends Base
             }
         }
         return false;
+    }
+
+    /**
+     * 获取用户的全部权限
+     *
+     * @param $id
+     *
+     * @return array|Permission[]
+     */
+    public function getPermissions($id): array
+    {
+        return array_keys(Yii::$app->authManager->getPermissionsByUser($id));
     }
 
 }

@@ -8,6 +8,7 @@ const getters = {
   email: state => state.user.email,
   menus: state => state.user.menus,
   reLogin: state => state.user.reLogin,
+  permissions: state => state.user.permissions,
   visitedViews: state => state.tagsView.visitedViews,
   cachedViews: state => state.tagsView.cachedViews
 }

@@ -256,8 +256,6 @@ class UserController extends AuthController
         $items   = $data['items'];
         $model   = new Assignment($id);
         $success = $model->assign($items);;
-        $success = 1;
-
         UserServices::getInstance()->isRole(true, $id);
         if ($success) {
             return $this->returnOk();
@@ -275,7 +273,6 @@ class UserController extends AuthController
      */
     public function actionRemove(Request $request): Response
     {
-        dd(123);
         $data    = $request->getBodyParams();
         $id      = $data['id'] ?? 0;
         $items   = $data['items'];

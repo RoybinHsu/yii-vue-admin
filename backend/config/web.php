@@ -71,7 +71,7 @@ $config = [
                     ],
                     [
                         'class'       => AppLogTarget::class,
-                        'levels'      => ['error', 'warning'],
+                        'levels'      => ['error', 'warning', 'info'],
                         'logVars'     => ['*'],
                         'categories'  => ['yii\db\*'],
                         'logFile'     => '@runtime/logs/db/stdout-' . $logDate . '.log',
