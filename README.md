@@ -41,7 +41,7 @@ $ npm run dev
 6. 菜单管理![](example/menu.png)
 7. 分配页面![](example/assign.png)
 
-#### 代码实例
+#### 代码展示
 1. 使前端封装的api请求
 ```
 import request from '@/utils/request'
@@ -75,9 +75,8 @@ export const constantRoutes = [
   ...err
 ]
 ```
-3. 使用前端统一列表搜索栏 例如: 菜单管理
-
-3.1 组建模板
+3. 使用前端统一列表搜索栏 例如: 菜单管理 
+- 3.1 组建模板
 ```
 <search-box
   :filters="filters"
@@ -98,7 +97,7 @@ export const constantRoutes = [
   </el-button>
 </search-box>
 ```
-3.2 引入SearchBox组建
+- 3.2 引入SearchBox组建
 ```
 export default {
     name: 'User',
@@ -106,7 +105,7 @@ export default {
     ...
 }
 ```
-3.3 配置搜索搜索条件 目前只支持 input 和 select 可根据自己需求情况自行添加
+- 3.3 配置搜索搜索条件 目前只支持 input 和 select 可根据自己需求情况自行添加
 ```
 data() {
     # fileters 就是过滤条件
@@ -145,7 +144,7 @@ data() {
       },
 }
 ```
-3.4 配置清空搜索条件方法和清空搜索条件方法
+- 3.4 配置清空搜索条件方法和清空搜索条件方法
 ```
 methods: {
     search() {
