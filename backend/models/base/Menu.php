@@ -43,7 +43,7 @@ class Menu extends Base
             [['pid', 'hidden', 'order'], 'integer'],
             [['meta', 'created_at', 'updated_at'], 'safe'],
             [['name', 'title', 'icon', 'path', 'redirect', 'api'], 'string', 'max' => 255],
-            [['path'], 'unique'],
+            [['path', 'pid'], 'unique', 'targetAttribute' => ['path', 'pid']],
         ];
     }
 

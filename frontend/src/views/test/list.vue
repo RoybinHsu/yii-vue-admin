@@ -1,10 +1,10 @@
 <template>
-  <h1>Hello AuthApi</h1>
+  <h1>Hello TestList</h1>
 </template>
 
 <script>
 export default {
-  name: 'AuthApi'
+  name: 'TestList'
 }
 </script>
 

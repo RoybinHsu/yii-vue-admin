@@ -2,7 +2,7 @@
 
 use app\utils\log\AppLogTarget;
 
-$timeZone = $queue = $logDate = $db = $params = $redis = null;
+$timeZone = $queue = $logDate = $db = $params = $redis = $components = null;
 require_once __DIR__ . '/common.php';
 
 $config = [
@@ -16,13 +16,7 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
         '@tests' => '@app/tests',
     ],
-    'components'          => [
-            'cache'  => [
-                'class' => 'yii\caching\FileCache',
-            ],
-            'helper' => [
-                'class' => Helper::class,
-            ],
+    'components'          => $components + [
             'log'    => [
                 'traceLevel' => 3,
                 'targets'    => [

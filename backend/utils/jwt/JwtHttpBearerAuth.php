@@ -49,7 +49,7 @@ class JwtHttpBearerAuth extends \sizeg\jwt\JwtHttpBearerAuth
         }
         if (preg_match('/^' . $this->schema . '\s+(.*?)$/', $authHeader, $matches)) {
             /**
-             * @var Token
+             * @var Token $token
              */
             $token = $this->loadToken($matches[1]);
             if ($token === null) {

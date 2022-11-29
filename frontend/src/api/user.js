@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/user/get-token',
+    url: '/auth/user/get-token',
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function login(data) {
 
 export function getInfo() {
   return request({
-    url: '/user/info',
+    url: '/auth/user/info',
     method: 'get',
     params: {}
   })
@@ -23,7 +23,7 @@ export function getInfo() {
  */
 export function registerUser(data) {
   return request({
-    url: '/user/register',
+    url: '/auth/user/register',
     method: 'post',
     params: data
   })
@@ -31,14 +31,14 @@ export function registerUser(data) {
 
 export function logout() {
   return request({
-    url: '/user/logout',
+    url: '/auth/user/logout',
     method: 'post'
   })
 }
 
 export function getWechatLoginInfo() {
   return request({
-    url: '/user/logout',
+    url: '/auth/user/logout',
     method: 'post'
   })
 }
@@ -49,7 +49,7 @@ export function getWechatLoginInfo() {
  */
 export function getUserMenus(data) {
   return request({
-    url: '/user/menus',
+    url: '/auth/user/menus',
     method: 'get',
     data: data
   })
@@ -62,7 +62,7 @@ export function getUserMenus(data) {
  */
 export function uploadMenus(data) {
   return request({
-    url: '/user/menus',
+    url: '/auth/user/menus',
     method: 'post',
     data: data
   })
@@ -74,7 +74,7 @@ export function uploadMenus(data) {
  */
 export function getCaptcha() {
   return request({
-    url: '/user/captcha',
+    url: '/auth/user/captcha',
     method: 'get',
     data: { _: Date.now() }
   })

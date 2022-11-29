@@ -14,6 +14,8 @@ use yii\helpers\Json;
 class UserServices extends Base
 {
 
+    const USER_ROLE_CACHE = 'FLY:USER_ROLE_CACHE:%s';
+
     /**
      * 通过id获取用户信息
      *
@@ -60,10 +62,8 @@ class UserServices extends Base
     ): array {
         $model = Menu::find()->orderBy(['hidden' => SORT_ASC, 'order' => SORT_ASC]);
         if ($tree) {
-            //$json = '[{"path":"/login","redirect":"","hidden":true,"name":"Login","meta":{"title":"登录"}},{"path":"/404","redirect":"","hidden":true,"name":"","meta":{"title":"未找到页面"}},{"path":"/","redirect":"/home","hidden":false,"name":"Home","meta":"","children":[{"path":"home","redirect":"","hidden":false,"name":"HomeIndex","meta":{"title":"首页","icon":"dashboard","noCache":false,"affix":true}}]},{"path":"/site","redirect":"/site/menu","hidden":false,"name":"Site","meta":{"title":"网站管理","icon":"el-icon-s-management"},"children":[{"path":"menu","redirect":"","hidden":false,"name":"SiteMenu","meta":{"title":"菜单管理","icon":"el-icon-s-operation"}}]},{"path":"/example","redirect":"/site/menu","hidden":false,"name":"Example","meta":{"title":"Example","icon":"el-icon-s-help"},"children":[{"path":"table","redirect":"","hidden":false,"name":"ExampleTable","meta":{"title":"表格","icon":"table","noCache":false}},{"path":"tree","redirect":"","hidden":false,"name":"ExampleTree","meta":{"title":"树形","icon":"tree","noCache":false}}]},{"path":"/form","redirect":"/form/index","hidden":false,"name":"Form","meta":"","children":[{"path":"index","redirect":"","hidden":false,"name":"FormForm","meta":{"title":"Form","icon":"form"}}]},{"path":"*","redirect":"/404","hidden":true,"name":"Any","meta":""},{"path":"/:catchAll(.*)","redirect":"/404","hidden":true,"name":"CatchAll","meta":""}]';
-            //return json_decode($json, true);
             $menus = $model->where(['hidden' => Menu::SHOW])->asArray()->all();
-            return $this->tree($menus);
+            return $this->tree($menus, 0, Yii::$app->user->getId());
         } else {
             foreach ($filter as $k => $v) {
                 if (!$v) {
@@ -82,8 +82,6 @@ class UserServices extends Base
             }
             return [$menus, $count];
         }
-        $json = '[{"path":"/login","redirect":"","hidden":true,"name":"Login","meta":{"title":"登录"}},{"path":"/404","redirect":"","hidden":true,"name":"","meta":{"title":"未找到页面"}},{"path":"/","redirect":"/home","hidden":false,"name":"Home","meta":"","children":[{"path":"home","redirect":"","hidden":false,"name":"HomeIndex","meta":{"title":"首页","icon":"dashboard","noCache":false,"affix":true}}]},{"path":"/site","redirect":"/site/menu","hidden":false,"name":"Site","meta":{"title":"网站管理","icon":"el-icon-s-management"},"children":[{"path":"menu","redirect":"","hidden":false,"name":"SiteMenu","meta":{"title":"菜单管理","icon":"el-icon-s-operation"}}]},{"path":"/example","redirect":"/site/menu","hidden":false,"name":"Example","meta":{"title":"Example","icon":"el-icon-s-help"},"children":[{"path":"table","redirect":"","hidden":false,"name":"ExampleTable","meta":{"title":"表格","icon":"table","noCache":false}},{"path":"tree","redirect":"","hidden":false,"name":"ExampleTree","meta":{"title":"树形","icon":"tree","noCache":false}}]},{"path":"/form","redirect":"/form/index","hidden":false,"name":"Form","meta":"","children":[{"path":"index","redirect":"","hidden":false,"name":"FormForm","meta":{"title":"Form","icon":"form"}}]},{"path":"*","redirect":"/404","hidden":true,"name":"Any","meta":""},{"path":"/:catchAll(.*)","redirect":"/404","hidden":true,"name":"CatchAll","meta":""}]';
-        return json_decode($json, true);
     }
 
     /**
@@ -91,9 +89,9 @@ class UserServices extends Base
      */
     public function checkRepeat($raw)
     {
-        $key = 'FLY:USER:MENU:' . shortMd5($raw);
+        $key = 'FLY:USER:MENU1:' . shortMd5($raw);
         if (Yii::$app->redis->setnx($key, 1)) {
-            Yii::$app->redis->expire($key, 86400);
+            Yii::$app->redis->expire($key, 60);
         } else {
             throw new Exception('请勿重复提交');
         }
@@ -137,8 +135,9 @@ class UserServices extends Base
             if ($model->save() && !empty($v['children'])) {
                 $this->saveMenus($v['children'], $model->id);
             } elseif (!empty($model->errors)) {
-                Yii::error('保存数据错误:' . Json::encode($model->errors));
-                throw new Exception('保存数据错误');
+                $msg = '保存数据错误:' . Json::encode($model->errors);
+                Yii::error($msg);
+                throw new Exception('保存数据错误' . $msg);
             }
         }
     }
@@ -147,15 +146,19 @@ class UserServices extends Base
     /**
      * @param $data
      * @param int $pid
+     * @param null $uid
      *
      * @return array
      */
-    public function tree($data, int $pid = 0): array
+    public function tree($data, int $pid = 0, $uid = null): array
     {
+        if ($uid === null) {
+            $uid = Yii::$app->user->getId();
+        }
         $menus = [];
         foreach ($data as $v) {
             if (+$v['pid'] === $pid) {
-                $child         = $this->tree($data, $v['id']);
+                $child         = $this->tree($data, $v['id'], $uid);
                 $c             = [];
                 $c['path']     = $v['path'];
                 $c['redirect'] = $v['redirect'];
@@ -164,11 +167,122 @@ class UserServices extends Base
                 $c['meta']     = json_decode($v['meta'], true);
                 if ($child) {
                     $c['children'] = $child;
+                    $menus[] = $c;
+                } else {
+                    // 标识最底层菜单 检查api权限
+                    if ($this->isRole()) {
+                        $menus[] = $c;
+                    }
+                    if (Yii::$app->authManager->checkAccess(Yii::$app->user->getId(), $v['api'])) {
+                        $menus[] = $c;
+                    }
                 }
-                $menus[] = $c;
             }
         }
         return $menus;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function add($data): bool
+    {
+        $id = $data['id'] ?? 0;
+        $id = intval($id);
+        if ($id !== 0) {
+            // 编辑
+            $model = User::findOne(['id' => $id]);
+        } else {
+            // 创建
+            $model = User::findUser($data['username'], $data['phone'], $data['email']);
+            if ($model) {
+                foreach (['username', 'phone', 'email'] as $r) {
+                    if ($data[$r] === $model->$r) {
+                        throw new Exception('' . $r . ': [' . $data[$r] . '] 已经被使用过了');
+                    }
+                }
+            } else {
+                $model = new User();
+            }
+        }
+        $model->username = $data['username'];
+        $model->phone    = $data['phone'];
+        $model->status   = User::STATUS_ACTIVE;
+        $model->email    = $data['email'];
+        $model->generateAuthKey();
+        $model->generatePasswordResetToken();
+        $model->password = $data['password'];
+        if ($model->save()) {
+            return true;
+        } else {
+            Yii::error('保存用户数据错误:' . Json::encode($model->errors));
+            throw new Exception('保存用户数据错误');
+        }
+    }
+
+    /**
+     * 获取用户列表
+     *
+     * @param array $filter
+     * @param int $offset
+     * @param int $limit
+     *
+     * @return array
+     */
+    public function getList(array $filter = [], int $offset = 0, int $limit = 20): array
+    {
+        $model = User::find()->select(['id', 'username', 'phone', 'email', 'status', 'created_at', 'updated_at']);
+        foreach ($filter as $k => $v) {
+            if (!$v) {
+                continue;
+            }
+            $model->andWhere([$k => $v]);
+        }
+        $count = $model->count();
+        $data  = $model
+            ->offset($offset)
+            ->limit($limit)
+            ->asArray()
+            ->orderBy(['id' => SORT_DESC])
+            ->all();
+        foreach ($data as &$v) {
+            $v['status_desc'] = User::getStatus($v['status']);
+        }
+        return [$count, $data];
+    }
+
+    /**
+     * 判断用户是否是超级管理员
+     *
+     * @param bool $flush
+     * @param null $uid
+     * @param string $role
+     *
+     * @return bool
+     */
+    public function isRole(bool $flush = false, $uid = null, string $role = '超级管理员'): bool
+    {
+        if ($uid === null) {
+            $uid = Yii::$app->user->getId();
+        }
+        $key = sprintf(self::USER_ROLE_CACHE, $uid);
+        if (!$flush && Yii::$app->redis->sismember($key, $role)) {
+            // 是该角色
+            return true;
+        } else {
+            // 没有该角色
+            // 查询数据库 再存缓存
+            Yii::$app->authManager->cache->flush();
+            $roles = Yii::$app->authManager->getRolesByUser($uid);
+            $roles = array_keys($roles);
+            Yii::$app->redis->del($key);
+            Yii::$app->redis->sadd($key, ...$roles);
+            Yii::$app->redis->expire($key, 86400);
+            if (in_array($role, $roles)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

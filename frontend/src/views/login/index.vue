@@ -83,7 +83,7 @@
 <script>
 import { validUsername } from '@/utils/validate'
 import { getCaptcha } from '@/api/user'
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Login',
@@ -104,8 +104,8 @@ export default {
     }
     return {
       loginForm: {
-        username: '15600061158',
-        password: '2022*#8910Xsb',
+        username: '',
+        password: '',
         captcha: ''
       },
       loginRules: {

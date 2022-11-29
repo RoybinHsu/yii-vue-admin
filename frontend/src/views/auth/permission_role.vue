@@ -100,13 +100,13 @@
 
 <script>
 import SearchBox from '@/components/SearchBox/SearchBox'
-import { roleAdd, roleDel, roleIndex } from '@/api/auth'
 
 export default {
-  name: 'SiteAuthRole',
+  name: 'SiteAuthPermissionRoleIndex',
   components: { SearchBox },
   data() {
     return {
+      type: '',
       filters: [
         {
           type: 'input',
@@ -133,83 +133,44 @@ export default {
       addFormDefault: null,
       addFormRules: {
         name: [{ required: true, trigger: 'blur', message: '缺少权限名称' }]
-      }
+      },
+      isPermission: false,
+      isRole: false
     }
   },
   created() {
-    this.addFormDefault = Object.assign({}, this.addForm)
-    this.search()
-  },
-  watch: {
-    addModal(val) {
-      if (!val) {
-        this.addForm = Object.assign({}, this.addFormDefault)
-      }
+    const path = this.$route.path
+    // 判断是角色页面还是权限页面
+    if (path.toLocaleLowerCase() === '/site/auth/role') {
+      this.isRole = true
     }
+    if (path.toLocaleLowerCase() === '/site/auth/permission') {
+      this.isPermission = true
+    }
+    this.type = this.$route.query.t
+    console.log(this.type)
+  },
+  mounted() {
+    console.log(123)
   },
   methods: {
     search() {
-      this.loading = true
-      roleIndex().then(res => {
-        this.list = res.data
-      }).catch(err => {
-        console.error(err)
-      }).finally(() => {
-        this.loading = false
-      })
+      console.log('search')
     },
     reset() {
       console.log('reset')
     },
-    add(t) {
-      this.addModalTitle = t
-      this.addModal = true
-    },
-    keywords(query) {
-      console.log(query)
-    },
     onSubmit() {
-      this.$refs.addForm.validate(valid => {
-        if (valid) {
-          // 校验成功
-          roleAdd(this.addForm).then(res => {
-            if (res.code === 200) {
-              this.addModal = false
-              this.search()
-            }
-          }).catch(err => {
-            console.error(err)
-          })
-        }
-      })
+      console.log('onSubmit')
     },
     edit(row) {
-      this.addForm = Object.assign(this.addForm, row)
-      this.addModal = true
+      console.log(row)
     },
     del(row) {
-      this.$alert('请确认要删除吗?', '提示', {
-        confirmButtonText: '确定',
-        type: 'warning'
-      }).then(res => {
-        roleDel({ name: row.name }).then(res => {
-          this.search()
-        }).catch(err => {
-          console.error(err)
-        })
-      }).catch(err => {
-        console.error(err)
-      })
+      console.log(row)
     },
     assign(row) {
-      this.$router.push({
-        name: 'SiteAuthAssignRole',
-        query: { type: 'role', name: row.name, description: row.description }
-      })
-      // this.$router.push({ path: '/site/auth/assign/router', query: { name: row.name }})
-    },
-    test(row) {
-      this.$router.push({ name: 'SiteAuthAssignRole', query: { type: 'role', name: row.name }})
+      console.log(row)
     }
   }
 }

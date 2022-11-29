@@ -84,7 +84,7 @@ class User extends Base implements IdentityInterface
     public static function findIdentityByAccessToken($token, $type = null): ?IdentityInterface
     {
         /**
-         *@var Token $token
+         * @var Token $token
          */
         $id = $token->getClaim('id');
         if ($id) {
@@ -186,6 +186,26 @@ class User extends Base implements IdentityInterface
             ->orWhere(['email' => $email])
             ->limit(1)
             ->one();
+    }
+
+    /**
+     * 获取状态和描述
+     *
+     * @param null $status
+     *
+     * @return string|string[]
+     */
+    public static function getStatus($status = null)
+    {
+        $map = [
+            self::STATUS_ACTIVE   => '正常',
+            self::STATUS_DELETED  => '删除',
+            self::STATUS_INACTIVE => '禁用',
+        ];
+        if ($status === null) {
+            return $map;
+        }
+        return $map[$status] ?? '-';
     }
 
 }

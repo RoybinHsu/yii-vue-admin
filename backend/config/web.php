@@ -1,7 +1,7 @@
 <?php
 
-use app\utils\helper\Helper;
 use app\utils\log\AppLogTarget;
+use mdm\admin\Module;
 use sizeg\jwt\Jwt;
 use sizeg\jwt\JwtValidationData;
 use yii\symfonymailer\Mailer;
@@ -19,8 +19,9 @@ $config = [
     'basePath'     => dirname(__DIR__),
     'bootstrap'    => array_merge(['log'], array_keys($queue)),
     'aliases'      => [
-        '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@bower'     => '@vendor/bower-asset',
+        '@npm'       => '@vendor/npm-asset',
+        '@mdm/admin' => '@vendor/mdmsoft/yii2-admin',
     ],
     'defaultRoute' => '/site/index',
     'components'   => $components + [
@@ -42,9 +43,6 @@ $config = [
                 'class'             => Jwt::class,
                 'key'               => '6Yhf4ZwqQUWyROLT',
                 'jwtValidationData' => JwtValidationData::class,
-            ],
-            'cache'        => [
-                'class' => 'yii\caching\FileCache',
             ],
             'user'         => [
                 'identityClass'   => app\models\User::class,
@@ -93,9 +91,13 @@ $config = [
                 'key'               => '6Yhf4ZwqQUWyROLT',
                 'jwtValidationData' => JwtValidationData::class,
             ],
-
         ] + $redis + $queue + $db,
     'params'       => $params,
+    'modules'      => [
+        'admin' => [
+            'class' => Module::class,
+        ],
+    ],
 ];
 
 if (YII_DEBUG) {
@@ -104,12 +106,12 @@ if (YII_DEBUG) {
     $config['modules']['debug'] = [
         'class'      => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        'allowedIPs' => ['172.19.0.1','127.0.0.1', '::1', '*'],
+        'allowedIPs' => ['172.19.0.1', '127.0.0.1', '::1', '*'],
     ];
 
     $config['bootstrap'][]    = 'gii';
     $config['modules']['gii'] = [
-        'class' => 'yii\gii\Module',
+        'class'      => 'yii\gii\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
         'allowedIPs' => ['127.0.0.1', '::1', '*'],
     ];

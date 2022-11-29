@@ -8,17 +8,19 @@
       @search="search"
       @reset="reset"
     >
-     <el-button
-       slot="buttonGroup"
-       type="primary"
-       size="small"
-       plain
-       @click="addUser"
-       icon="el-icon-plus">添加用户</el-button>
+      <el-button
+        slot="buttonGroup"
+        type="primary"
+        size="small"
+        plain
+        @click="addUser('添加用户')"
+        icon="el-icon-plus">添加用户
+      </el-button>
     </search-box>
     <el-row>
       <el-col :span="24">
         <el-table
+          v-loading="loading"
           border
           size="mini"
           default-expand-all
@@ -50,7 +52,7 @@
           <el-table-column
             align="center"
             label="状态"
-            prop="status">
+            prop="status_desc">
           </el-table-column>
           <el-table-column
             align="center"
@@ -60,23 +62,93 @@
           <el-table-column
             align="center"
             label="操作"
+            width="250px"
           >
             <template v-slot="scope">
-              <el-button type="danger" plain size="mini" round @click="deleteUser(scope.row)"><i class="el-icon-delete"></i>删除</el-button>
+              <el-button-group>
+                <el-button
+                  type="primary"
+                  plain
+                  size="mini"
+                  round
+                  icon="el-icon-edit-outline"
+                  @click="addUser('编辑用户', scope.row)">编辑
+                </el-button>
+                <el-button
+                  type="danger"
+                  plain
+                  size="mini"
+                  round
+                  icon="el-icon-delete"
+                  @click="del(scope.row)">删除
+                </el-button>
+                <el-button
+                  type="success"
+                  plain
+                  size="mini"
+                  round
+                  icon="el-icon-link"
+                  @click="assign(scope.row)">分配
+                </el-button>
+              </el-button-group>
             </template>
           </el-table-column>
         </el-table>
       </el-col>
     </el-row>
-    <el-dialog title="收货地址" :visible.sync="addUserModal" :close-on-click-modal="false">
-      <el-form :model="addUserForm">
-        <el-form-item label="活动名称" label-width="120px">
-          <el-input v-model="addUserForm.username" autocomplete="off"></el-input>
+    <el-row>
+      <el-col :span="24" class="pagination-box ">
+        <el-pagination
+          @current-change="pageChange"
+          background
+          :page-size="searchModel.limit"
+          layout="prev, pager, next"
+          :total="userTotal">
+        </el-pagination>
+      </el-col>
+    </el-row>
+    <el-dialog :title="addUserModalTitle" :visible.sync="addUserModal" :close-on-click-modal="false">
+      <el-form ref="addUserForm" :model="addUserForm" :rules="addUserRules" label-width="120px">
+        <el-form-item label="用户名称:" prop="username">
+          <el-input
+            ref="username"
+            v-model="addUserForm.username"
+            tabindex="1"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="电话号码:" prop="phone">
+          <el-input
+            ref="phone"
+            v-model="addUserForm.phone"
+            autocomplete="off"
+            tabindex="2"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱:" prop="email">
+          <el-input
+            ref="email"
+            v-model="addUserForm.email"
+            autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码:" prop="password">
+          <el-input
+            type="password"
+            ref="password"
+            autocomplete="off"
+            v-model="addUserForm.password"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码:" prop="password_confirm">
+          <el-input
+            type="password"
+            ref="password_confirm"
+            autocomplete="off"
+            v-model="addUserForm.password_confirm"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addUserModal = false">取 消</el-button>
-        <el-button type="primary" @click="addUserModal = false">确 定</el-button>
+        <el-button type="primary" @click="onSubmitAddUser">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -84,6 +156,7 @@
 
 <script>
 import SearchBox from '@/components/SearchBox/SearchBox'
+import { addUser, userList } from '@/api/auth'
 
 export default {
   name: 'AuthUser',
@@ -114,36 +187,102 @@ export default {
         }
       ],
       searchModel: {
+        page: 1,
+        limit: 20,
         username: '',
         phone: '',
         email: ''
       },
-      userList: [
-        { id: 1, username: '徐顺斌', phone: '12313', email: 'groot@qq.com', status: 10, created_at: '2022-11-24 15:09:19' },
-        { id: 2, username: '徐顺斌', phone: '12313', email: 'groot@qq.com', status: 10, created_at: '2022-11-24 15:09:19' }
-      ],
+      defaultSearchModel: {},
+      userTotal: 0,
+      loading: false,
+      userList: [],
       addUserModal: false,
+      addUserModalTitle: '',
+      addUserRules: {
+        username: [{ required: true, trigger: 'blur', message: '缺少用户名' }],
+        phone: [{ required: true, trigger: 'blur', message: '缺少手机号码' }],
+        email: [{ required: true, trigger: 'blur', message: '缺少邮箱地址' }],
+        password: [{ required: true, trigger: 'blur', message: '缺少密码' }],
+        password_confirm: [{ required: true, trigger: 'blur', message: '缺少确认密码' }]
+      },
       addUserForm: {
+        id: '',
         username: '',
         phone: '',
         email: '',
         password: '',
         password_confirm: ''
+      },
+      defaultAddUserForm: {}
+    }
+  },
+  watch: {
+    addUserModal(value) {
+      if (!value) {
+        // 隐藏dialog
+        console.log(this.defaultAddUserForm)
+        this.addUserForm = Object.assign({}, this.defaultAddUserForm)
       }
     }
   },
+  created() {
+    this.defaultAddUserForm = Object.assign({}, this.addUserForm)
+    this.defaultSearchModel = Object.assign({}, this.searchModel)
+    this.search()
+  },
   methods: {
     search() {
-      console.log('search')
+      this.loading = true
+      userList(this.searchModel).then(res => {
+        this.userList = res.data.data
+        this.userTotal = res.data.total
+      }).catch(err => {
+        console.error(err)
+      }).finally(() => {
+        this.loading = false
+      })
     },
     reset() {
-      console.log('reset')
+      this.searchModel = this.defaultSearchModel
+      this.search()
     },
-    deleteUser(row) {
-      console.log(row)
-    },
-    addUser() {
+    addUser(title, row = undefined) {
+      this.addUserModalTitle = title
       this.addUserModal = !this.addUserModal
+      if (row === undefined) {
+        this.addUserForm.id = ''
+      } else {
+        this.addUserForm = Object.assign(this.addUserForm, row)
+      }
+    },
+    onSubmitAddUser() {
+      this.$refs.addUserForm.validate(valid => {
+        if (valid) {
+          // 校验成功
+          addUser(this.addUserForm).then(res => {
+            if (res.code === 200) {
+              this.addUserModal = false
+              this.search()
+            }
+          }).catch(err => {
+            console.error(err)
+          })
+        }
+      })
+    },
+    pageChange(page) {
+      this.searchModel.page = page
+      this.search()
+    },
+    assign(row) {
+      this.$router.push({
+        name: 'SiteAuthAssignUser',
+        query: { type: 'user', name: row.username, uid: row.id, description: row.description }
+      })
+    },
+    del(row) {
+      console.log(row)
     }
   }
 }

@@ -19,7 +19,7 @@ class m221119_102847_AT_menu extends Migration
             'name'       => $this->string(255)->notNull()->defaultValue('')->comment('名称'),
             'title'      => $this->string(255)->notNull()->defaultValue('')->comment('中文名称'),
             'icon'       => $this->string(255)->notNull()->defaultValue('')->comment('icon'),
-            'path'       => $this->string(255)->notNull()->defaultValue('')->unique()->comment('前端页面路径'),
+            'path'       => $this->string(255)->notNull()->defaultValue('')->comment('前端页面路径'),
             'redirect'   => $this->string(255)->notNull()->defaultValue('')->comment('重定向页面路径'),
             'hidden'     => $this->tinyInteger(1)->notNull()->defaultValue(1)->comment('菜单栏中隐藏'),
             'meta'       => $this->json()->defaultValue(null)->comment('meta信息'),
@@ -28,7 +28,7 @@ class m221119_102847_AT_menu extends Migration
             'created_at' => $this->dateTime(),
             'updated_at' => $this->dateTime(),
         ], $tableOptions);
-
+        $this->createIndex('path_pid_unq', '{{%menu}}', ['path', 'pid'], true);
     }
 
     /**

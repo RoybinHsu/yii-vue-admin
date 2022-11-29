@@ -60,28 +60,49 @@ service.interceptors.response.use(
     const res = response.data
     // if the custom code is not 20000, it is judged as an error.
     if (+res.code !== 200) {
-      if (+res.code === 401) {
-        // to re-login
-        // MessageBox.alert('您当前登录状态已过期, 请重新登录', '登录过期', {
-        //   confirmButtonText: '确认',
-        //   cancelButtonText: '取消',
-        //   type: 'warning'
-        // }).then(() => {
-        // }).finally(() => {
-        //   store.dispatch('user/resetToken').then(() => {
-        //     window.location.reload()
-        //   })
-        // })
-        store.dispatch('user/resetToken').then(() => {
-          window.location.reload()
-        })
-      } else {
-        Message({
-          message: res.message || 'Error',
-          type: 'error',
-          duration: 3000
-        })
+      switch (+res.code) {
+        case 401:
+          store.dispatch('user/resetToken').then(() => {
+            //window.location.reload()
+          })
+          break
+        case 403:
+          Message({
+            message: res.message || 'Error',
+            type: 'error',
+            duration: 3000
+          })
+          break
+        default:
+          Message({
+            message: res.message || 'Error',
+            type: 'error',
+            duration: 3000
+          })
+          break
       }
+      // if (+res.code === 401) {
+      //   // to re-login
+      //   // MessageBox.alert('您当前登录状态已过期, 请重新登录', '登录过期', {
+      //   //   confirmButtonText: '确认',
+      //   //   cancelButtonText: '取消',
+      //   //   type: 'warning'
+      //   // }).then(() => {
+      //   // }).finally(() => {
+      //   //   store.dispatch('user/resetToken').then(() => {
+      //   //     window.location.reload()
+      //   //   })
+      //   // })
+      //   store.dispatch('user/resetToken').then(() => {
+      //     window.location.reload()
+      //   })
+      // } else {
+      //   Message({
+      //     message: res.message || 'Error',
+      //     type: 'error',
+      //     duration: 3000
+      //   })
+      // }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res

@@ -21,7 +21,8 @@
         "sizeg/yii2-jwt": "^2.0",
         "yiisoft/yii2-redis": "~2.0.0",
         "guzzlehttp/guzzle": "^7.3",
-        "javareact/alibaba_open": "^1.1"
+        "javareact/alibaba_open": "^1.1",
+        "mdmsoft/yii2-admin": "~2.12"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

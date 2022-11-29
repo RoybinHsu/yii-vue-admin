@@ -1,8 +1,9 @@
 <?php
 
-use app\utils\alibaba\Cuckoo as Cuckoo1688;
 use app\utils\helper\Helper;
-use app\utils\pdd\Cuckoo as CuckooPdd;
+use yii\i18n\PhpMessageSource;
+use yii\rbac\DbManager;
+use yii\redis\Cache;
 
 require_once __DIR__ . '/helper.php';
 $params   = require __DIR__ . '/params.php';
@@ -19,16 +20,22 @@ $components = [
     'helper'      => [
         'class' => Helper::class,
     ],
-    'cuckoo_1688' => [
-        'class'        => Cuckoo1688::class,
-        'client_id'    => '999999',
-        'app_secret'   => 'aabde5de42c679a812',
-        'redirect_url' => 'https://fly.com/1688',
+    'authManager' => [
+        'class'        => DbManager::class,
+        "defaultRoles" => ["guest"],
+        'cache'        => 'cache',
     ],
-    'cuckoo_pdd'  => [
-        'class'        => CuckooPdd::class,
-        'client_id'    => '888888',
-        'app_secret'   => 'abe81de8d6d6788ec',
-        'redirect_url' => 'https://fly.com/pdd',
+    'cache'       => [
+        'class' => Cache::class,
+        'redis' => 'redis_cache',
+    ],
+    'i18n'        => [
+        'translations' => [
+            'rbac-admin' => [
+                'class'          => PhpMessageSource::class, //'yii\i18n\PhpMessageSource',
+                'sourceLanguage' => 'en',
+                'basePath'       => '@mdm/admin/messages',
+            ],
+        ],
     ],
 ];

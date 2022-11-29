@@ -49,5 +49,35 @@ export default [
         children: []
       }
     ]
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    redirect: '/test/index',
+    hidden: false,
+    component: Layout,
+    meta: { title: '表单', icon: 'form' },
+    children: [
+      {
+        path: 'index',
+        name: 'TestIndex',
+        redirect: '',
+        api: '/test/index',
+        hidden: false,
+        component: () => import('@/views/test/index'),
+        meta: { title: '测试页面', icon: 'form' },
+        children: []
+      },
+      {
+        path: 'list',
+        name: 'TestList',
+        redirect: '',
+        api: '/test/list',
+        hidden: false,
+        component: () => import('@/views/test/list'),
+        meta: { title: '测试列表', icon: 'form' },
+        children: []
+      }
+    ]
   }
 ]
