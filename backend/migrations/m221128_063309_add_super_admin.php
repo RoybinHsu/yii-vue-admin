@@ -48,6 +48,10 @@ class m221128_063309_add_super_admin extends Migration
         echo "账号:admin 角色: 超级管理员 创建成功 \n";
         $ret = UserServices::getInstance()->isRole(true, $uid, '超级管理员');
         echo '角色数据缓存结果: ' . $ret . "\n";
+
+
+        // 1. 创建一个/auth/user/info接口权限 2. 创建guest角色  3. 并分配guest角色的权限
+
     }
 
     /**

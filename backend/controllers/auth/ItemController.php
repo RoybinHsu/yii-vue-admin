@@ -67,9 +67,12 @@ class ItemController extends AuthController
      */
     public function actionDelete(Request $request): Response
     {
+        $arr = [
+            '超级管理员', 'guest'
+        ];
         $id    = $request->get('name', 0);
-        if ($id === '超级管理员') {
-            throw new Exception('超级管理不允许被删除');
+        if (in_array($id, $arr)) {
+            throw new Exception($id . '不允许被删除');
         }
         $model = $this->findModel($id);
         $ret   = Yii::$app->authManager->remove($model->item);
