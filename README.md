@@ -1,7 +1,7 @@
 # fly
 
 #### 介绍
-后台管理系统模板, Yii2做后端 vue2做前端,其中实现了 RBAC模块 以及前端的一些基础封装
+后台管理系统模板, Yii2做后端 vue2做前端, yii-vue-admin yii2-vue-admin element-ui 其中实现了 RBAC模块 以及前端的一些基础封装
 
 #### 开发环境
 
