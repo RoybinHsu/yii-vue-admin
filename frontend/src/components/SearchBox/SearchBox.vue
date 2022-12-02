@@ -2,7 +2,7 @@
   <div>
     <el-form :model="model" ref="searchBox" status-icon :label-width="labelWidth">
       <el-row>
-        <el-col :span="rowSpan" v-for="filter in filters" :key="filter.key">
+        <el-col :lg="rowSpan" :md="8" :sm="12" :xs="24" v-for="filter in filters" :key="filter.key">
           <el-form-item :label="filter.labelText">
             <el-select v-if="filter.type === 'select'" v-model="model[filter.name]" :size="itemSize" placeholder="请选择" style="width:100%;">
               <el-option
@@ -23,12 +23,12 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="11" :offset="1">
+        <el-col class="hidden-md-and-down" :lg="12" >
           <small>
             <slot name="extraLeft"><div class="default-slot"></div></slot>
           </small>
         </el-col>
-        <el-col :span="12" class="search-box-btn-group">
+        <el-col :md="24" :lg="12" class="search-box-btn-group">
           <slot name="buttonGroup"></slot>
           <el-button type="danger" plain size="small" icon="el-icon-delete" @click="resetForm">重置</el-button>
           <el-button type="success" plain size="small" icon="el-icon-search" @click="onSubmit">搜索</el-button>
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import 'element-ui/lib/theme-chalk/display.css'
 export default {
   name: 'SearchBox',
   props: {
@@ -107,8 +108,8 @@ export default {
   text-align: right;
 }
 .default-slot {
-  width: 10px;
-  height: 10px;
+  width: 1px;
+  height: 1px;
 }
 .search-box-divider {
   border-top: 0px;
