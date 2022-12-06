@@ -17,96 +17,175 @@
         icon="el-icon-plus">添加用户
       </el-button>
     </search-box>
-    <el-row>
-      <el-col :span="24">
-        <el-table
-          v-loading="loading"
-          border
-          size="mini"
-          default-expand-all
-          :data="userList"
-          style="width: 100%"
-          align="center"
-        >
-          <el-table-column
+    <section class="hidden-sm-and-down">
+      <el-row>
+        <el-col :span="24">
+          <el-table
+            v-loading="loading"
+            border
+            size="mini"
+            default-expand-all
+            :data="userList"
+            style="width: 100%"
             align="center"
-            label="ID"
-            width="90px"
-            prop="id">
-          </el-table-column>
-          <el-table-column
-            align="center"
-            label="用户名"
-            prop="username">
-          </el-table-column>
-          <el-table-column
-            align="center"
-            label="手机号"
-            prop="phone">
-          </el-table-column>
-          <el-table-column
-            align="center"
-            label="邮箱"
-            prop="email">
-          </el-table-column>
-          <el-table-column
-            align="center"
-            label="状态"
-            prop="status_desc">
-          </el-table-column>
-          <el-table-column
-            align="center"
-            label="创建时间"
-            prop="created_at">
-          </el-table-column>
-          <el-table-column
-            align="center"
-            label="操作"
-            width="250px"
           >
-            <template v-slot="scope">
-              <el-button-group>
-                <el-button
-                  type="primary"
-                  plain
-                  size="mini"
-                  round
-                  icon="el-icon-edit-outline"
-                  @click="addUser('编辑用户', scope.row)">编辑
-                </el-button>
-                <el-button
-                  type="danger"
-                  plain
-                  size="mini"
-                  round
-                  icon="el-icon-delete"
-                  @click="del(scope.row)">删除
-                </el-button>
-                <el-button
-                  type="success"
-                  plain
-                  size="mini"
-                  round
-                  icon="el-icon-link"
-                  @click="assign(scope.row)">分配
-                </el-button>
-              </el-button-group>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="24" class="pagination-box ">
-        <el-pagination
-          @current-change="pageChange"
-          background
-          :page-size="searchModel.limit"
-          layout="prev, pager, next"
-          :total="userTotal">
-        </el-pagination>
-      </el-col>
-    </el-row>
+            <el-table-column
+              align="center"
+              label="ID"
+              width="90px"
+              prop="id">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              label="用户名"
+              prop="username">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              label="手机号"
+              prop="phone">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              label="邮箱"
+              prop="email">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              label="状态"
+              prop="status_desc">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              label="创建时间"
+              prop="created_at">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              label="操作"
+              width="250px"
+            >
+              <template v-slot="scope">
+                <el-button-group>
+                  <el-button
+                    type="primary"
+                    plain
+                    size="mini"
+                    round
+                    icon="el-icon-edit-outline"
+                    @click="addUser('编辑用户', scope.row)">编辑
+                  </el-button>
+                  <el-button
+                    type="danger"
+                    plain
+                    size="mini"
+                    round
+                    icon="el-icon-delete"
+                    @click="del(scope.row)">删除
+                  </el-button>
+                  <el-button
+                    type="success"
+                    plain
+                    size="mini"
+                    round
+                    icon="el-icon-link"
+                    @click="assign(scope.row)">分配
+                  </el-button>
+                </el-button-group>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24" class="pagination-box ">
+          <el-pagination
+            @current-change="pageChange"
+            background
+            :page-size="searchModel.limit"
+            :current-page="searchModel.page"
+            layout="prev, pager, next"
+            :total="userTotal">
+          </el-pagination>
+        </el-col>
+      </el-row>
+    </section>
+    <section class="hidden-md-and-up">
+      <min-table :data="userList" :load-more="minLoad" table="menuTable" :loading="loading">
+        <min-table-column
+          label="ID"
+          prop="id"
+          slot="id"
+          slot-scope="scope"
+          :row="scope.row"></min-table-column>
+        <min-table-column
+          label="用户名"
+          prop="username"
+          slot="username"
+          slot-scope="scope"
+          :row="scope.row"></min-table-column>
+        <min-table-column
+          label="手机号"
+          prop="phone"
+          slot="phone"
+          slot-scope="scope"
+          :row="scope.row"></min-table-column>
+        <min-table-column
+          label="邮箱"
+          prop="email"
+          slot="email"
+          slot-scope="scope"
+          :row="scope.row"></min-table-column>
+        <min-table-column
+          label="状态"
+          prop="status_desc"
+          slot="status_desc"
+          slot-scope="scope"
+          :row="scope.row"></min-table-column>
+        <min-table-column
+          label="创建时间"
+          prop="created_at"
+          slot="created_at"
+          slot-scope="scope"
+          :row="scope.row">
+        </min-table-column>
+        <min-table-column
+          label="操作"
+          prop="append"
+          slot="append"
+          slot-scope="scope"
+          :row="scope.row">
+          <template>
+            <el-button-group>
+              <el-button
+                type="primary"
+                plain
+                size="mini"
+                round
+                icon="el-icon-edit-outline"
+                @click="addUser('编辑用户', scope.row)">编辑
+              </el-button>
+              <el-button
+                type="danger"
+                plain
+                size="mini"
+                round
+                icon="el-icon-delete"
+                @click="del(scope.row)">删除
+              </el-button>
+              <el-button
+                type="success"
+                plain
+                size="mini"
+                round
+                icon="el-icon-link"
+                @click="assign(scope.row)">分配
+              </el-button>
+            </el-button-group>
+          </template>
+        </min-table-column>
+      </min-table>
+    </section>
     <el-dialog :title="addUserModalTitle" :visible.sync="addUserModal" :close-on-click-modal="false">
       <el-form ref="addUserForm" :model="addUserForm" :rules="addUserRules" label-width="120px">
         <el-form-item label="用户名称:" prop="username">
@@ -157,10 +236,12 @@
 <script>
 import SearchBox from '@/components/SearchBox/SearchBox'
 import { addUser, userList } from '@/api/auth'
+import MinTable from '@/components/MinTable/Table'
+import MinTableColumn from '@/components/MinTable/Column'
 
 export default {
   name: 'AuthUser',
-  components: { SearchBox },
+  components: { SearchBox, MinTable, MinTableColumn },
   data() {
     return {
       filters: [
@@ -196,6 +277,8 @@ export default {
       defaultSearchModel: {},
       userTotal: 0,
       loading: false,
+      noMore: false,
+      loadMoreBtn: true,
       userList: [],
       addUserModal: false,
       addUserModalTitle: '',
@@ -224,6 +307,9 @@ export default {
         console.log(this.defaultAddUserForm)
         this.addUserForm = Object.assign({}, this.defaultAddUserForm)
       }
+    },
+    searchModel(val) {
+      console.log(val)
     }
   },
   created() {
@@ -235,6 +321,11 @@ export default {
     search() {
       this.loading = true
       userList(this.searchModel).then(res => {
+        if (res.data.data.length === 0 || res.data.data.length < this.searchModel.limit) {
+          this.noMore = true
+        } else {
+          this.loadMoreBtn = true
+        }
         this.userList = res.data.data
         this.userTotal = res.data.total
       }).catch(err => {
@@ -283,6 +374,10 @@ export default {
     },
     del(row) {
       console.log(row)
+    },
+    minLoad() {
+      this.searchModel.page += 1
+      this.search()
     }
   }
 }
